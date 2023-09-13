@@ -16,8 +16,8 @@ public class Security {
     public UserDetailsManager userDetailsManager(DataSource dataSource){
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
         jdbcUserDetailsManager.setEnableAuthorities(true);
-        jdbcUserDetailsManager.setUsersByUsernameQuery("SELECT username, password, enabled FROM users WHERE username = ?");
-        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("SELECT users.username,authority FROM authorities INNER JOIN users ON users.user_id = authorities.user_id WHERE username = ?");
+        jdbcUserDetailsManager.setUsersByUsernameQuery("SELECT username, password, enabled FROM user WHERE username = ?");
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("SELECT user.username,authority FROM authority INNER JOIN user ON user.user_id = authority.user_id WHERE username = ?");
 
         return jdbcUserDetailsManager;
 
