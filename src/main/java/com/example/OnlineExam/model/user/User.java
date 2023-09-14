@@ -1,6 +1,7 @@
 package com.example.OnlineExam.model.user;
 
 import com.example.OnlineExam.model.subject.Grade;
+import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.test.Test;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
@@ -36,7 +37,31 @@ public class User {
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Test> tests;
+    @ManyToOne()
+    @JoinColumn(name = "class_id")
+    private Class className;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_subject",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id")
+    )
+    private List<Subject> subjects;
 
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(List<Subject> subjects) {
+        this.subjects = subjects;
+    }
+
+    public Class getClassName() {
+        return className;
+    }
+
+    public void setClassName(Class className) {
+        this.className = className;
+    }
 
     public User(String username, String password, boolean enabled, String name, String surname, String email) {
         this.username = username;
@@ -130,5 +155,11 @@ public class User {
         }
         tests.add(test);
         test.setUser(this);
+    }
+    public void addSubject(Subject subject){
+        if (this.subjects == null){
+            subjects = new ArrayList<>();
+        }
+        subjects.add(subject);
     }
 }

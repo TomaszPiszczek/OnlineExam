@@ -18,10 +18,10 @@ public class Grade {
     private int gradeId;
     @Column(name = "grade")
     private int grade;
-    @Column(name = "user_id")
-    private int userId;
-    @Column(name = "test_id")
-    private int testId;
+    /*@Column(name = "user_id")
+    private int userId;*/
+    /*@Column(name = "test_id")
+    private int testId;*/
     @Column(name = "date")
     private LocalDateTime dateTime;
 
@@ -51,8 +51,8 @@ public class Grade {
 
     public Grade(int grade, int userId, int testId, LocalDateTime dateTime) {
         this.grade = grade;
-        this.userId = userId;
-        this.testId = testId;
+        //this.userId = userId;
+        //this.testId = testId;
         this.dateTime = dateTime;
     }
 
@@ -64,7 +64,7 @@ public class Grade {
         this.grade = grade;
     }
 
-    public int getUserId() {
+   /* public int getUserId() {
         return userId;
     }
 
@@ -79,7 +79,7 @@ public class Grade {
     public void setTestId(int testId) {
         this.testId = testId;
     }
-
+*/
     public LocalDateTime getDateTime() {
         return dateTime;
     }

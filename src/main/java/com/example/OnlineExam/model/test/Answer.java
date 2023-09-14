@@ -11,8 +11,8 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "answer_id")
     private  int answerId;
-    @Column(name = "question_id")
-    private int question_Id;
+    /*@Column(name = "question_id")
+    private int question_Id;*/
     @Column(name = "answer")
     private String answer;
     @Column(name = "correct")
@@ -31,19 +31,19 @@ public class Answer {
     }
 
     public Answer(int question_Id, String answer, boolean correct) {
-        this.question_Id = question_Id;
+       // this.question_Id = question_Id;
         this.answer = answer;
         this.correct = correct;
     }
 
-    public int getQuestion_Id() {
+   /* public int getQuestion_Id() {
         return question_Id;
     }
 
     public void setQuestion_Id(int question_Id) {
         this.question_Id = question_Id;
     }
-
+*/
     public String getAnswer() {
         return answer;
     }

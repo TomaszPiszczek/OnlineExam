@@ -18,10 +18,10 @@ public class Test {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "test_id")
     private int testId;
-    @Column(name = "subject_id")
+  /*  @Column(name = "subject_id")
     private int subject_id;
     @Column(name = "test_creator")
-    private int user_id;
+    private int user_id;*/
     @Column(name = "date")
     private LocalDateTime dateTime;
     @OneToMany(mappedBy = "test",cascade = CascadeType.ALL)
@@ -60,7 +60,7 @@ public class Test {
         this.user = user;
     }
 
-    public Test(int subject_id, int user_id, LocalDateTime dateTime) {
+   /* public Test(int subject_id, int user_id, LocalDateTime dateTime) {
         this.subject_id = subject_id;
         this.user_id = user_id;
         this.dateTime = dateTime;
@@ -80,7 +80,7 @@ public class Test {
 
     public void setUser_id(int user_id) {
         this.user_id = user_id;
-    }
+    }*/
 
     public LocalDateTime getDateTime() {
         return dateTime;
