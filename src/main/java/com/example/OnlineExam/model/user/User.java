@@ -3,7 +3,6 @@ package com.example.OnlineExam.model.user;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 @NoArgsConstructor
 @Entity
@@ -25,15 +24,11 @@ public class User {
     private String surname;
     @Column(name = "email")
     private String email;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
     private List<Authority> roles;
     @ManyToOne()
     @JoinColumn(name = "class_id")
     private SchoolClass schoolClass;
-
-
-
-
 
 
     public User(String username, String password, boolean enabled, String name, String surname, String email) {
@@ -107,15 +102,13 @@ public class User {
         this.email = email;
     }
 
-    public void addRole(Authority role){
-        if(roles == null){
-            roles = new ArrayList<>();
-        }
-        roles.add(role);
-        role.setUser(this);
+    public List<Authority> getRoles() {
+        return roles;
     }
 
-   
+    public void setRoles(List<Authority> roles) {
+        this.roles = roles;
+    }
 
 
 }
