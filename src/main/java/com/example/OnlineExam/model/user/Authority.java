@@ -15,7 +15,15 @@ public class Authority {
     private String authority;
     @ManyToOne()
     @JoinColumn(name = "user_id")
-    private User user;
+    User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Authority(String authority) {
         this.authority = authority;
@@ -33,12 +41,5 @@ public class Authority {
         this.authority = authority;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
 }
