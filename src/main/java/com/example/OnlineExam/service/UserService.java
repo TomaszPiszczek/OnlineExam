@@ -1,5 +1,7 @@
 package com.example.OnlineExam.service;
 
+import com.example.OnlineExam.exception.SchoolClassNotFoundException;
+import com.example.OnlineExam.exception.UsernameNotFoundException;
 import com.example.OnlineExam.model.user.Authority;
 import com.example.OnlineExam.model.user.SchoolClass;
 import com.example.OnlineExam.model.user.User;
@@ -10,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Slf4j
 @Service
 public class UserService {
@@ -38,13 +42,17 @@ public class UserService {
         }
 
     }
-    public void saveUserToClass(User user, SchoolClass schoolClass){
-        try{
-            schoolClassRepository.getSchoolClassByName(schoolClass.getName());
-        }catch (NullPointerException ex){
-            throw new NullPointerException("Class not found");
-        }
+    public void saveUserToClass(String userName,String schoolClassName){
 
-        user.setSchoolClass(schoolClass);
+        User user = userRepository.getUserByName(userName).orElseThrow(UsernameNotFoundException::new);
+        SchoolClass schoolClass1 =  schoolClassRepository.getSchoolClassByName(schoolClassName).orElseThrow(SchoolClassNotFoundException::new);
+
+        user.setSchoolClass(schoolClass1);
     }
+    public void saveUser(User user){
+        userRepository.save(user);
+    }
+
+
+
 }

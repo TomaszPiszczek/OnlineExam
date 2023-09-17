@@ -1,9 +1,12 @@
 package com.example.OnlineExam.model.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
+//todo ERROR VALIDATION FOR WRONG PASSWORD AND USERNAME. EXCEPTION HANDLING, IMPROVE TESTS
 @NoArgsConstructor
 @Entity
 @Table(name = "\"user\"")
@@ -12,17 +15,27 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private int userId;
-    @Column(name = "username")
+    @Column(name = "username",unique = true)
+    @Length(min = 2, max = 50, message = "Username must be between 2-50 characters")
+    @NotBlank(message = "Username cannot be blank")
     private String username;
     @Column(name = "password")
+    @NotBlank(message = "Password cannot be blank")
+    @Length(min = 2, max = 50, message = "Password must be between 2-50 characters")
     private String password;
     @Column(name = "enabled")
     private boolean enabled;
     @Column(name = "name")
+    @NotBlank(message = "Name cannot be blank")
+    @Length(min = 2, max = 50, message = "Name must be between 2-50 characters")
     private String name;
     @Column(name = "surname")
+    @NotBlank(message = "Surname cannot be blank")
+    @Length(min = 2, max = 50, message = "Surname must be between 2-50 characters")
     private String surname;
     @Column(name = "email")
+    @NotBlank(message = "Email cannot be blank")
+    @Length(min = 2, max = 50, message = "Email must be between 2-50 characters")
     private String email;
     @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
     private List<Authority> roles;
@@ -58,49 +71,6 @@ public class User {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public List<Authority> getRoles() {
         return roles;
