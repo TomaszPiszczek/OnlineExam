@@ -9,6 +9,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
+//todo CSRV
 
 @Configuration
 public class Security {
@@ -16,8 +17,11 @@ public class Security {
     public UserDetailsManager userDetailsManager(DataSource dataSource){
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
         jdbcUserDetailsManager.setEnableAuthorities(true);
-        jdbcUserDetailsManager.setUsersByUsernameQuery("SELECT username, password, enabled FROM user WHERE username = ?");
-        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("SELECT user.username,authority FROM authority INNER JOIN user ON user.user_id = authority.user_id WHERE username = ?");
+        jdbcUserDetailsManager.setUsersByUsernameQuery("SELECT username, password, enabled FROM public.user WHERE username = ?");
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("SELECT \"user\".\"username\", \"authority\".\"authority\"\n" +
+                "FROM \"authority\"\n" +
+                "INNER JOIN \"public\".\"user\" ON \"user\".\"user_id\" = \"authority\".\"user_id\"\n" +
+                "WHERE \"user\".\"username\" = ?");
 
         return jdbcUserDetailsManager;
 
@@ -33,6 +37,7 @@ public class Security {
         );
 
         http.httpBasic(Customizer.withDefaults());
+        http.csrf(csrf ->csrf.disable());
 
 
         return http.build();
