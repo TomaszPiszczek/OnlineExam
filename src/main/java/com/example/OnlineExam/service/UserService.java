@@ -8,12 +8,12 @@ import com.example.OnlineExam.model.user.User;
 import com.example.OnlineExam.repository.AuthorityRepository;
 import com.example.OnlineExam.repository.SchoolClassRepository;
 import com.example.OnlineExam.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
 @Slf4j
 @Service
 public class UserService {
@@ -27,6 +27,7 @@ public class UserService {
         this.authorityRepository = authorityRepository;
     }
 
+    @Transactional
     public void addUserRole(User user, String roleName) {
         List<Authority> userRoles = user.getRoles();
 
@@ -42,13 +43,17 @@ public class UserService {
         }
 
     }
+    @Transactional
     public void saveUserToClass(String userName,String schoolClassName){
 
-        User user = userRepository.getUserByName(userName).orElseThrow(UsernameNotFoundException::new);
+        User user = userRepository.getUserByUsername(userName).orElseThrow(UsernameNotFoundException::new);
+
         SchoolClass schoolClass1 =  schoolClassRepository.getSchoolClassByName(schoolClassName).orElseThrow(SchoolClassNotFoundException::new);
 
         user.setSchoolClass(schoolClass1);
+
     }
+    @Transactional
     public void saveUser(User user){
         userRepository.save(user);
     }
