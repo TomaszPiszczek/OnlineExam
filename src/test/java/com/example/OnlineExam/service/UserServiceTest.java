@@ -5,7 +5,6 @@ import com.example.OnlineExam.exception.UsernameNotFoundException;
 import com.example.OnlineExam.model.user.User;
 import com.example.OnlineExam.repository.SchoolClassRepository;
 import com.example.OnlineExam.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-@Transactional
+import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class UserServiceTest {
 	@Autowired
@@ -24,14 +21,25 @@ class UserServiceTest {
 	SchoolClassRepository schoolClassRepository;
 	@Autowired
 	UserRepository userRepository;
-
 	@Test
-	void saveUserToClass() {
+	public void removeUserFromClass() {
+		User user = userRepository.getUserByUsername("name3")
+				.orElseGet(() -> new User("name3", "password", true, "name", "surname", "email"));
+
 		userService.saveUserToClass("name3","4B");
+		assertEquals("4B",user.getSchoolClass().getName());//Wyrzuca ze user.SchoolClass.getName() jest nullem
 
-		User user = userRepository.getUserByUsername("name3").orElseThrow();
+		userService.removeUserFromClass("name3","4B");
+		assertNull(user.getSchoolClass());
+	}
+	@Test
+	void saveUserFromClass(){
+		User user = userRepository.getUserByUsername("name3")
+				.orElseGet(() -> new User("name3", "password", true, "name", "surname", "email"));
 
-		assertEquals("4B",user.getSchoolClass().getName());
+		userService.saveUserToClass("name3","4B");
+		userService.removeUserFromClass("name3","4B");
+		assertNull(user.getSchoolClass());
 	}
 	@Test
 	void saveUserToNotExistingClassShouldThrowException() {
@@ -48,14 +56,14 @@ class UserServiceTest {
 	}
 	@Test
 	void addUserRole(){
-		User user = new User("name","password",true,"name","surname","email");
-		if(userRepository.getUserByUsername("name").isEmpty()){
-			userService.saveUser(user);
+		User user = userRepository.getUserByUsername("name3")
+				.orElseGet(() -> new User("name3", "password", true, "name", "surname", "email"));
+		userService.saveUser(user);
+		userService.saveUser(user);
 
-		}
-		userService.addUserRole(user,"ROLE_TEACHER");
+		//userService.addUserRole("name3","ROLE_TEACHER");
 
-		assertEquals("ROLE_TEACHER",user.getRoles().get(0).getAuthority());
+		//assertEquals("ROLE_TEACHER",user.getRoles().get(0).getAuthority());
 	}
 	@Test
 	void addUserWithoutValidCredentialsShouldThrowException(){

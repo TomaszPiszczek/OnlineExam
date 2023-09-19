@@ -5,8 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.ArrayList;
 import java.util.List;
-//todo ERROR VALIDATION FOR WRONG PASSWORD AND USERNAME. EXCEPTION HANDLING, IMPROVE TESTS
+
 @NoArgsConstructor
 @Entity
 @Table(name = "\"user\"")
@@ -51,8 +52,11 @@ public class User {
         this.name = name;
         this.surname = surname;
         this.email = email;
+        this.roles = new ArrayList<Authority>();
 
     }
+    
+
 
 
     public SchoolClass getSchoolClass() {
