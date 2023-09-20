@@ -38,11 +38,18 @@ public class User {
     @NotBlank(message = "Email cannot be blank")
     @Length(min = 2, max = 50, message = "Email must be between 2-50 characters")
     private String email;
-    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<Authority> roles;
     @ManyToOne()
     @JoinColumn(name = "class_id")
     private SchoolClass schoolClass;
+    @ManyToMany()
+    @JoinTable(
+            name = "user_subject",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id")
+    )
+    private List<User> users;
 
 
     public User(String username, String password, boolean enabled, String name, String surname, String email) {
@@ -55,7 +62,7 @@ public class User {
         this.roles = new ArrayList<Authority>();
 
     }
-    
+
 
 
 
@@ -83,6 +90,7 @@ public class User {
     public void setRoles(List<Authority> roles) {
         this.roles = roles;
     }
+
 
 
 }
