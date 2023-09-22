@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 public class ClassServiceTest {
     @ClassRule
     public static PostgreSQLContainer postgreSQLContainer = PostgresqlContainer.getInstance();
@@ -33,22 +34,6 @@ public class ClassServiceTest {
     SchoolClassRepository schoolClassRepository;
 
     @Test
-    @Transactional
-    public void removeUserFromClass() {
-        //given
-        insertUsers();
-        //when
-        classService.saveUserToClass("test1","4B");
-        classService.removeUserFromClass("test1");
-
-        User user = userRepository.getUserByUsername("test1").orElseThrow();
-        //then
-        assertNull(user.getSchoolClass());
-    }
-
-
-    @Test
-    @Transactional
     public void saveUserToClass(){
         //given
         insertUsers();
@@ -60,8 +45,37 @@ public class ClassServiceTest {
         assertEquals("4A",user.getSchoolClass().getName());
     }
     @Test
-    @Transactional
-    public void saveUserToNotExistingClassShouldThrowException() {
+    public void removeUserFromClass() {
+        //given
+        insertUsers();
+        //when
+        classService.saveUserToClass("test1","4B");
+        classService.removeUserFromClass("test1");
+
+        User user = userRepository.getUserByUsername("test1").orElseThrow();
+        //then
+        assertNull(user.getSchoolClass());
+    }
+    @Test
+    public void removeUserFromClassShouldNotDeleteClass() {
+        //given
+        insertUsers();
+        //when
+        classService.saveUserToClass("test1","4B");
+        classService.removeUserFromClass("test1");
+
+        User user = userRepository.getUserByUsername("test1").orElseThrow();
+        SchoolClass schoolClass = schoolClassRepository.getSchoolClassByName("4B").orElseThrow();
+        //then
+        assertNull(user.getSchoolClass());
+        assertEquals("4B",schoolClass.getName());
+
+    }
+
+
+
+    @Test
+    public void saveUserToNotExistingClassThrowException() {
         //given
         insertUsers();
         //when
@@ -71,7 +85,6 @@ public class ClassServiceTest {
         assertEquals("Class not found",exception.getMessage());
     }
     @Test
-    @Transactional
     public void saveNullUserClassShouldThrowException() {
         //given
         insertUsers();
