@@ -14,7 +14,7 @@ public class SchoolClass {
     @Column(name = "class")
     private String name;
     @OneToMany(mappedBy = "schoolClass",fetch = FetchType.EAGER)
-    List<User> users;
+    private List<User> users;
 
 
     public String getName() {

@@ -4,7 +4,8 @@ import com.example.OnlineExam.model.user.User;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -16,12 +17,29 @@ public class Subject {
     private int id;
     @Column(name = "subject")
     private String subjectName;
-    @ManyToMany()
-    @JoinTable(
-            name = "user_subject",
-            joinColumns = @JoinColumn(name = "subject_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> users;
+    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "subjects")
+    private Set<User> users;
+
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    public Set<User> getUsers() {
+        if(users == null){
+            users = new HashSet<>();
+        }
+        return users;
+    }
+
+
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+
 
 }
