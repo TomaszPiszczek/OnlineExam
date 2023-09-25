@@ -1,6 +1,7 @@
 package com.example.OnlineExam.model.user;
 
 import com.example.OnlineExam.model.subject.Subject;
+import com.example.OnlineExam.model.test.Test;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
@@ -41,12 +42,12 @@ public class User {
     @NotBlank(message = "Email cannot be blank")
     @Length(min = 2, max = 50, message = "Email must be between 2-50 characters")
     private String email;
-    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user")
     private List<Authority> roles;
     @ManyToOne()
     @JoinColumn(name = "class_id")
     private SchoolClass schoolClass;
-    @ManyToMany(fetch = FetchType.EAGER,
+    @ManyToMany(
             cascade = {CascadeType.MERGE, CascadeType.PERSIST })
     @JoinTable(
             name = "user_subjects",
@@ -54,6 +55,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "subject_id")
     )
     private Set<Subject> subjects;
+    @OneToMany(mappedBy = "user")
+    Set<Test> tests;
+
 
 
     public User(String username, String password, boolean enabled, String name, String surname, String email) {
@@ -75,9 +79,6 @@ public class User {
         return subjects;
     }
 
-    public void setSubjects(HashSet<Subject> subjects) {
-        this.subjects = subjects;
-    }
 
     public SchoolClass getSchoolClass() {
         return schoolClass;
@@ -87,9 +88,6 @@ public class User {
         this.schoolClass = schoolClass;
     }
 
-    public int getUserId() {
-        return userId;
-    }
 
     public String getUsername() {
         return username;
