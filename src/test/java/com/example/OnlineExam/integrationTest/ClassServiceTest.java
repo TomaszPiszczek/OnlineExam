@@ -5,8 +5,8 @@ import com.example.OnlineExam.exception.SchoolClassNotFoundException;
 import com.example.OnlineExam.exception.UsernameNotFoundException;
 import com.example.OnlineExam.model.user.SchoolClass;
 import com.example.OnlineExam.model.user.User;
-import com.example.OnlineExam.repository.SchoolClassRepository;
-import com.example.OnlineExam.repository.UserRepository;
+import com.example.OnlineExam.repository.user.SchoolClassRepository;
+import com.example.OnlineExam.repository.user.UserRepository;
 import com.example.OnlineExam.service.ClassService;
 import jakarta.transaction.Transactional;
 import org.junit.ClassRule;
@@ -85,7 +85,7 @@ public class ClassServiceTest {
         assertEquals("Class not found",exception.getMessage());
     }
     @Test
-    public void saveNullUserClassShouldThrowException() {
+    public void saveNullUserToClassShouldThrowException() {
         //given
         insertUsers();
         //when
@@ -107,4 +107,6 @@ public class ClassServiceTest {
 
         userRepository.flush();
     }
+
+
 }

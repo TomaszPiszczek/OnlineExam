@@ -3,9 +3,9 @@ package com.example.OnlineExam.integrationTest;
 import com.example.OnlineExam.db.PostgresqlContainer;
 import com.example.OnlineExam.model.user.SchoolClass;
 import com.example.OnlineExam.model.user.User;
-import com.example.OnlineExam.repository.AuthorityRepository;
-import com.example.OnlineExam.repository.SchoolClassRepository;
-import com.example.OnlineExam.repository.UserRepository;
+import com.example.OnlineExam.repository.user.AuthorityRepository;
+import com.example.OnlineExam.repository.user.SchoolClassRepository;
+import com.example.OnlineExam.repository.user.UserRepository;
 import com.example.OnlineExam.service.ClassService;
 import com.example.OnlineExam.service.UserService;
 import jakarta.transaction.Transactional;
@@ -45,10 +45,11 @@ public class UserServiceTest {
         //given
         insertUsers();
         //when
-        userService.addUserRole("test1","ROLE_TEACHER");
+        userService.addUserRole("test1","TEACHER");
         User user = userRepository.getUserByUsername("test1").orElseThrow();
         //then
-        assertEquals("ROLE_TEACHER",user.getRoles().get(0).getAuthority());
+        assertTrue(user.getRoles().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_TEACHER")));
     }
     @Test
     void removeUserRole(){
@@ -59,7 +60,7 @@ public class UserServiceTest {
         User user = userRepository.getUserByUsername("test2").orElseThrow();
 
         //then
-        assertThrows(IndexOutOfBoundsException.class,()->user.getRoles().get(0));
+        assertFalse(user.getRoles().stream().anyMatch(role -> role.getAuthority().equals("ROLE_TEACHER")));
     }
     @Test
     void addUserWithoutValidCredentialsShouldThrowException(){

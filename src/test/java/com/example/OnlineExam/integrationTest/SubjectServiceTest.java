@@ -6,7 +6,7 @@ import com.example.OnlineExam.exception.UsernameNotFoundException;
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.user.User;
 import com.example.OnlineExam.repository.SubjectRepository;
-import com.example.OnlineExam.repository.UserRepository;
+import com.example.OnlineExam.repository.user.UserRepository;
 import com.example.OnlineExam.service.SubjectService;
 import jakarta.transaction.Transactional;
 import org.junit.ClassRule;
@@ -50,18 +50,16 @@ public class SubjectServiceTest {
         assertThrows(UsernameNotFoundException.class,() -> subjectService.addUserToSubject("notExistingUser","mathematics"));
     }
     @Test
-    public void addTwoUsersToSameClassDontAddSecondUser(){
+    public void addTwoUsersToSameClassShouldNotAddSecondUser(){
         //given
         insertUsers();
         //when
         subjectService.addUserToSubject("test1","mathematics");
         Subject subject = subjectRepository.getSubjectBySubjectName("mathematics").orElseThrow();
-
         //then
         assertEquals(1,subject.getUsers().size());
     }
 
-    @Transactional
     @Test
     public void removeUserFromSubject(){
         //given
@@ -84,6 +82,7 @@ public class SubjectServiceTest {
         //then
         assertThrows(SubjectNotFoundException.class,() ->  subjectService.removeUserFromSubject("test1","NotExistingSubject"));
     }
+
     @Test
     public void deleteSubjectShouldRemoveEveryUserFromSubject(){
         //given
@@ -135,6 +134,8 @@ public class SubjectServiceTest {
 
 
         userRepository.flush();
+        subjectRepository.flush();
+
     }
 
 
