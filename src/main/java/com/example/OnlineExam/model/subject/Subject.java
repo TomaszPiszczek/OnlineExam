@@ -1,10 +1,14 @@
 package com.example.OnlineExam.model.subject;
 
+import com.example.OnlineExam.model.test.Test;
 import com.example.OnlineExam.model.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -16,9 +20,14 @@ public class Subject {
     @Column(name = "subject_id")
     private int id;
     @Column(name = "subject")
+    @NotBlank(message = "Subject name cannot be blank")
+    @Length(min = 2, max = 50, message = "Subject name must be between 2-50 characters")
     private String subjectName;
-    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "subjects")
+    @ManyToMany(mappedBy = "subjects")
     private Set<User> users;
+    @OneToMany(mappedBy = "subject")
+    private List<Test> tests;
+
 
     public String getSubjectName() {
         return subjectName;
@@ -31,14 +40,14 @@ public class Subject {
         return users;
     }
 
+    public int getId() {
+        return id;
+    }
 
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
 
 
 

@@ -1,11 +1,13 @@
 package com.example.OnlineExam.model.test;
 
+import com.example.OnlineExam.model.subject.Grade;
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.user.User;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Set;
 
 @Entity
@@ -25,11 +27,13 @@ public class Test {
     @Column(name = "test_name")
     private String testName;
     @Column(name = "date")
-    private LocalDateTime dateTime;
+    private LocalDateTime dateTime = LocalDateTime.now();
 
 
     @OneToMany(mappedBy = "test")
     private Set<Question> questions;
+    @OneToMany(mappedBy = "test")
+    private ArrayList<Grade> grades;
 
 
     public Subject getSubject() {

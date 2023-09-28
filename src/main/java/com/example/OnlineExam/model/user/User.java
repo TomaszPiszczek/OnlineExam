@@ -1,5 +1,6 @@
 package com.example.OnlineExam.model.user;
 
+import com.example.OnlineExam.model.subject.Grade;
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.test.Test;
 import jakarta.persistence.*;
@@ -7,7 +8,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +26,7 @@ public class User {
     private String username;
     @Column(name = "password")
     @NotBlank(message = "Password cannot be blank")
-    @Length(min = 2, max = 50, message = "Password must be between 2-50 characters")
+    @Length(min = 2, max = 70)
     private String password;
     @Column(name = "enabled")
     private boolean enabled;
@@ -43,7 +43,7 @@ public class User {
     @Length(min = 2, max = 50, message = "Email must be between 2-50 characters")
     private String email;
     @OneToMany(mappedBy = "user")
-    private List<Authority> roles;
+    private Set<Authority> roles;
     @ManyToOne()
     @JoinColumn(name = "class_id")
     private SchoolClass schoolClass;
@@ -57,6 +57,9 @@ public class User {
     private Set<Subject> subjects;
     @OneToMany(mappedBy = "user")
     Set<Test> tests;
+    @OneToMany(mappedBy = "user")
+    List<Grade> grades;
+
 
 
 
@@ -67,7 +70,7 @@ public class User {
         this.name = name;
         this.surname = surname;
         this.email = email;
-        this.roles = new ArrayList<>();
+        this.roles = new HashSet<>();
         this.subjects = new HashSet<>();
     }
 
@@ -94,11 +97,11 @@ public class User {
     }
 
 
-    public List<Authority> getRoles() {
+    public Set<Authority> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Authority> roles) {
+    public void setRoles(Set<Authority> roles) {
         this.roles = roles;
     }
 
