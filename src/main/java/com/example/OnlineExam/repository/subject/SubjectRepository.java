@@ -1,4 +1,4 @@
-package com.example.OnlineExam.repository;
+package com.example.OnlineExam.repository.subject;
 
 import com.example.OnlineExam.model.subject.Subject;
 import jakarta.transaction.Transactional;
@@ -24,4 +24,5 @@ public interface SubjectRepository extends JpaRepository<Subject,Integer> {
 
     boolean existsSubjectsBySubjectName(String name);
 
+    Optional<Subject> getSubjectById(int id);
 }

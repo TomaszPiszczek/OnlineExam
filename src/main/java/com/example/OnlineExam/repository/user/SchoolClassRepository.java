@@ -1,4 +1,4 @@
-package com.example.OnlineExam.repository;
+package com.example.OnlineExam.repository.user;
 
 import com.example.OnlineExam.model.user.SchoolClass;
 import org.springframework.data.jpa.repository.JpaRepository;
