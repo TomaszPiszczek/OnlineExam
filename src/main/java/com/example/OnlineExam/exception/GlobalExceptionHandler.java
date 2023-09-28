@@ -2,6 +2,7 @@ package com.example.OnlineExam.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.Data;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,7 +17,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorObject> constraintViolationException(ConstraintViolationException ex, WebRequest request) {
         ErrorObject errorObject = new ErrorObject();
 
-        errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
+        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
         errorObject.setTimestamp(new Date());
 
         //GET MESSAGE FROM ConstraintViolationException
@@ -32,7 +33,16 @@ public class GlobalExceptionHandler {
             }
 
         }
-        return new ResponseEntity<ErrorObject>(errorObject,HttpStatus.NOT_FOUND);
+        return new ResponseEntity<ErrorObject>(errorObject,HttpStatus.BAD_REQUEST);
 
     }
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public ResponseEntity<ErrorObject> dataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorObject.setTimestamp(new Date());
+        errorObject.setMessage("User already exist");
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
+
 }
