@@ -6,7 +6,6 @@ import com.example.OnlineExam.model.user.User;
 import com.example.OnlineExam.repository.user.AuthorityRepository;
 import com.example.OnlineExam.repository.user.SchoolClassRepository;
 import com.example.OnlineExam.repository.user.UserRepository;
-import com.example.OnlineExam.service.ClassService;
 import com.example.OnlineExam.service.UserService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
@@ -35,8 +34,6 @@ public class UserServiceTest {
     UserRepository userRepository;
     @Autowired
     AuthorityRepository authorityRepository;
-    @Autowired
-    ClassService classService;
 
 
 

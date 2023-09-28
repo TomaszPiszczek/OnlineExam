@@ -5,7 +5,7 @@ import com.example.OnlineExam.exception.SubjectNotFoundException;
 import com.example.OnlineExam.exception.UsernameNotFoundException;
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.user.User;
-import com.example.OnlineExam.repository.SubjectRepository;
+import com.example.OnlineExam.repository.subject.SubjectRepository;
 import com.example.OnlineExam.repository.user.UserRepository;
 import com.example.OnlineExam.service.SubjectService;
 import jakarta.transaction.Transactional;
