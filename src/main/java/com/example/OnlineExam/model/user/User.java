@@ -5,6 +5,7 @@ import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.test.Test;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
@@ -22,24 +23,24 @@ public class User {
     private int userId;
     @Column(name = "username",unique = true)
     @Length(min = 2, max = 50, message = "Username must be between 2-50 characters")
-    @NotBlank(message = "Username cannot be blank")
+    @NotNull(message = "Username cannot be blank")
     private String username;
     @Column(name = "password")
-    @NotBlank(message = "Password cannot be blank")
-    @Length(min = 2, max = 70)
+    @NotNull(message = "Password cannot be blank")
+    @Length(min = 2, max = 70, message = "Password must be between 2-70 characters")
     private String password;
     @Column(name = "enabled")
     private boolean enabled;
     @Column(name = "name")
-    @NotBlank(message = "Name cannot be blank")
+    @NotNull(message = "Name cannot be blank")
     @Length(min = 2, max = 50, message = "Name must be between 2-50 characters")
     private String name;
     @Column(name = "surname")
-    @NotBlank(message = "Surname cannot be blank")
+    @NotNull(message = "Surname cannot be blank")
     @Length(min = 2, max = 50, message = "Surname must be between 2-50 characters")
     private String surname;
     @Column(name = "email")
-    @NotBlank(message = "Email cannot be blank")
+    @NotNull(message = "Email cannot be blank")
     @Length(min = 2, max = 50, message = "Email must be between 2-50 characters")
     private String email;
     @OneToMany(mappedBy = "user")
@@ -63,7 +64,7 @@ public class User {
 
 
 
-    public User(String username, String password, boolean enabled, String name, String surname, String email) {
+    public User(@NotNull String username, @NotNull String password, boolean enabled, @NotNull String name, @NotNull String surname, @NotNull String email) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
@@ -92,7 +93,7 @@ public class User {
     }
 
 
-    public String getUsername() {
+    public @NotNull String getUsername() {
         return username;
     }
 
