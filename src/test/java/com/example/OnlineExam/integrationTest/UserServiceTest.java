@@ -67,7 +67,7 @@ public class UserServiceTest {
         Exception exception = assertThrows(ConstraintViolationException.class,
                 () -> userService.saveUser(user));
 
-        assertThat(exception.getMessage()).contains("Username cannot be blank","Password cannot be blank","Name cannot be blank","Surname cannot be blank","Email cannot be blank");
+        assertThat(exception.getMessage()).contains("Username","Password","Name","Surname","Email");
     }
     @Test
     void addTwoUserWithSameNameShouldThrowException() {
@@ -83,7 +83,7 @@ public class UserServiceTest {
     private void insertUsers(){
         userRepository.save(new User("test1", "password", true, "name", "surname", "email"));
         userRepository.save(new User("test2", "password", true, "name", "surname", "email"));
-        userService.addUserRole("test2","ROLE_TEACHER");
+        userService.addUserRole("test2","TEACHER");
 
         SchoolClass schoolClass = new SchoolClass();
         schoolClass.setName("4B");

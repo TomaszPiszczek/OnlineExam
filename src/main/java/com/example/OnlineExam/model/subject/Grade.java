@@ -5,6 +5,7 @@ import com.example.OnlineExam.model.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -23,11 +24,14 @@ public class Grade {
     private int grade;
     @ManyToOne()
     @JoinColumn(name = "user_id")
+    @NotNull(message = "user cannot be null")
     private User user;
     @ManyToOne
     @JoinColumn(name = "test_id")
+    @NotNull(message = "test cannot be null")
     private Test test;
     @Column(name = "date")
+    @NotNull(message = "date cannot be null")
     private LocalDateTime dateTime = LocalDateTime.now();
 
     public int getGrade() {
@@ -38,27 +42,24 @@ public class Grade {
         this.grade = grade;
     }
 
-    public User getUser() {
+    public @NotNull User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(@NotNull User user) {
         this.user = user;
     }
 
-    public Test getTest() {
+    public @NotNull Test getTest() {
         return test;
     }
 
-    public void setTest(Test test) {
+    public void setTest(@NotNull Test test) {
         this.test = test;
     }
 
-    public LocalDateTime getDateTime() {
+    public @NotNull LocalDateTime getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
 }
