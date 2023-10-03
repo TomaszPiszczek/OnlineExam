@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping(value = "/api")
-public class Register {
+public class RegisterController {
     PasswordEncoder passwordEncoder;
     UserRepository userRepository;
 
-    public Register(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+    public RegisterController(PasswordEncoder passwordEncoder, UserRepository userRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
     }

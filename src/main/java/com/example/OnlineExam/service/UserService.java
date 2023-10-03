@@ -44,7 +44,7 @@ public class UserService {
         }
     }
     @Transactional
-    public void removeUserRole(String userName){
+    public void removeAllUserRole(String userName){
         User user = userRepository.getUserByUsername(userName).orElseThrow(UsernameNotFoundException::new);
 
         authorityRepository.deleteAuthorityByUsername(userName);

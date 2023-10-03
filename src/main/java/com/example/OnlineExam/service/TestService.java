@@ -14,6 +14,8 @@ import com.example.OnlineExam.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TestService {
     TestRepository testRepository;
@@ -54,6 +56,10 @@ public class TestService {
     public void changeTestName(int testId,String name){
         Test test = testRepository.getTestById(testId).orElseThrow(TestNotFoundException::new);
         test.setTestName(name);
+    }
+    public List<Test> getTests(String userName){
+        User user = userRepository.getUserByUsername(userName).orElseThrow(UsernameNotFoundException::new);
+        return testRepository.getTestsByUser(user).orElseThrow(TestNotFoundException::new);
     }
 
 }

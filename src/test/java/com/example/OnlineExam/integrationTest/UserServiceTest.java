@@ -53,7 +53,7 @@ public class UserServiceTest {
         //given
         insertUsers();
         //when
-        userService.removeUserRole("test2");
+        userService.removeAllUserRole("test2");
         User user = userRepository.getUserByUsername("test2").orElseThrow();
 
         //then

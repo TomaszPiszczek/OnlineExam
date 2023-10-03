@@ -74,16 +74,20 @@ public class TestServiceTest {
         Subject subject = new Subject();
         subject.setSubjectName("math");
         subjectRepository.save(subject);
-        Subject subject1 = subjectRepository.getSubjectBySubjectName("math").orElseThrow();
-        
 
-        String json = "{\"testName\":\"Test Math\",\"user\":{\"username\":\"test\"},\"subject\":{\"id\":" + subject1.getId() + "},\"questions\":[{\"question\":\"2 + 2?\",\"answers\":[{\"answer\":\"3\",\"correct\":false},{\"answer\":\"4\",\"correct\":true},{\"answer\":\"5\",\"correct\":false},{\"answer\":\"6\",\"correct\":false}]},{\"question\":\"3 - 2?\",\"answers\":[{\"answer\":\"0\",\"correct\":false},{\"answer\":\"1\",\"correct\":true},{\"answer\":\"2\",\"correct\":false},{\"answer\":\"3\",\"correct\":false}]}]}";
+
+        String json = "{\"testName\":\"Test Math\",\"user\":{\"username\":\"test\"},\"subject\":{\"id\":" + subject.getId() + "},\"questions\":[{\"question\":\"2 + 2?\",\"answers\":[{\"answer\":\"3\",\"correct\":false},{\"answer\":\"4\",\"correct\":true},{\"answer\":\"5\",\"correct\":false},{\"answer\":\"6\",\"correct\":false}]},{\"question\":\"3 - 2?\",\"answers\":[{\"answer\":\"0\",\"correct\":false},{\"answer\":\"1\",\"correct\":true},{\"answer\":\"2\",\"correct\":false},{\"answer\":\"3\",\"correct\":false}]}]}";
        //then
         mockMvc.perform(MockMvcRequestBuilders.post("/createTest")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
+    @Test
+    public void getTestsShouldReturnTests(){
+
+    }
+
 
     private void insertUsers(){
         subjectRepository.flush();
