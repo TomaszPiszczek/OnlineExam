@@ -1,7 +1,6 @@
-package com.example.OnlineExam.exception;
+package com.example.OnlineExam.exception.global;
 
 import jakarta.validation.ConstraintViolationException;
-import lombok.Data;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

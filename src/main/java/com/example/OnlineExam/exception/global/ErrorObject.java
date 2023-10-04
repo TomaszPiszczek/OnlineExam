@@ -1,4 +1,4 @@
-package com.example.OnlineExam.exception;
+package com.example.OnlineExam.exception.global;
 
 import lombok.Data;
 
