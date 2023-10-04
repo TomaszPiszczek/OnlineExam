@@ -9,6 +9,7 @@ import com.example.OnlineExam.repository.subject.SubjectRepository;
 import com.example.OnlineExam.repository.user.UserRepository;
 import com.example.OnlineExam.service.SubjectService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.util.ArrayList;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
@@ -107,6 +111,21 @@ public class SubjectServiceTest {
         assertEquals(1,user2.getSubjects().size());
         assertEquals(1,user3.getSubjects().size());
     }
+    @Test
+    public void addMultipleUsersToSubject(){
+        //given
+        insertUsers();
+        ArrayList<String> users = new ArrayList<>();
+        users.add("test1");
+        users.add("test2");
+        users.add("test3");
+        users.add("test4");
+        //when
+        subjectService.addUsersToSubject(users,"mathematics");
+        Subject subject = subjectRepository.getSubjectBySubjectName("mathematics").orElseThrow();
+        //
+        assertEquals(4,subject.getUsers().size());
+    }
     @SuppressWarnings("OptionalGetWithoutIsPresent")
 
     @Test
@@ -122,6 +141,19 @@ public class SubjectServiceTest {
         assertEquals("mathematics",response);
         assertFalse(user.getSubjects().stream()
                 .anyMatch(subject1 -> subject1.getSubjectName().equals("mathematics")));
+    }
+
+
+    @Test
+    public void createSubjectWithEmptyNameThrowException(){
+        //given
+        Subject subject = new Subject();
+        //when
+        Exception exception = assertThrows(ConstraintViolationException.class,
+                () -> subjectRepository.save(subject));
+        //then
+        assertThat(exception.getMessage()).contains("Subject name cannot be blank");
+
     }
 
 

@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -36,6 +37,21 @@ public class SubjectService {
             user.addSubject(subject);
         }
     }
+
+    @Transactional
+    public void addUsersToSubject(List<String> userNames, String subjectName){
+        Subject subject = subjectRepository.getSubjectBySubjectName(subjectName).orElse(new Subject());
+        subject.setSubjectName(subjectName);
+        for (String name:userNames
+             ) {
+            User user = userRepository.getUserByUsername(name).orElseThrow(UsernameNotFoundException::new);
+            if(!user.getSubjects().contains(subject)){
+                user.addSubject(subject);
+            }
+        }
+    }
+
+
     @Transactional
     @SuppressWarnings("unused")
     public void removeUserFromSubject(String userName, String subjectName) {
