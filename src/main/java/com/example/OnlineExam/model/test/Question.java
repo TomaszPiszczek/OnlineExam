@@ -1,6 +1,7 @@
 package com.example.OnlineExam.model.test;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
@@ -17,6 +18,7 @@ public class Question {
     @JoinColumn(name = "test_id")
     private Test test;
     @Column(name = "question")
+    @NotNull(message = "Question cannot be blank")
     private String question;
     @OneToMany(mappedBy = "question")
     private Set<Answer> answers;

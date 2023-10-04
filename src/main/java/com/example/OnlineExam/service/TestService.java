@@ -1,8 +1,6 @@
 package com.example.OnlineExam.service;
 
-import com.example.OnlineExam.exception.SubjectNotFoundException;
-import com.example.OnlineExam.exception.TestNotFoundException;
-import com.example.OnlineExam.exception.UsernameNotFoundException;
+import com.example.OnlineExam.exception.*;
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.test.Test;
 import com.example.OnlineExam.model.user.User;
@@ -33,24 +31,37 @@ public class TestService {
     }
     @Transactional
     public void createTest(Test test){
-        User user = userRepository.getUserByUsername(test.getUser().getUsername()).orElseThrow(UsernameNotFoundException::new);
-        Subject subject = subjectRepository.getSubjectById(test.getSubject().getId()).orElseThrow(SubjectNotFoundException::new);
-        Test saveTest = new Test();
+        if(test.getUser() == null) throw new UsernameNotFoundException();
+        if(test.getSubject() == null) throw new SubjectNotFoundException();
+        if(test.getQuestions() == null) throw new QuestionNotFoundException();
+        if(test.getQuestions().stream().anyMatch(answer -> answer.getAnswers() == null )) throw new AnswerNotFoundException();
 
-        saveTest.setTestName(test.getTestName());
-        test.setUser(user);
-        test.setSubject(subject);
-        testRepository.save(test);
+        if(getTests(test.getUser().getUsername()).stream().anyMatch(test1 -> test1.getTestName().equals(test.getTestName())))
+        {
+            throw new DuplicateTestException();
+        }else {
+            User user = userRepository.getUserByUsername(test.getUser().getUsername()).orElseThrow(UsernameNotFoundException::new);
+            Subject subject = subjectRepository.getSubjectById(test.getSubject().getId()).orElseThrow(SubjectNotFoundException::new);
+            Test saveTest = new Test();
 
-        test.getQuestions().forEach(
-                question ->{
-                    question.setTest(test);
-                    questionRepository.save(question);
-                    question.getAnswers().forEach(answer -> {
-                        answer.setQuestion(question);
-                        answerRepository.save(answer);
+
+
+            saveTest.setTestName(test.getTestName());
+            test.setUser(user);
+            test.setSubject(subject);
+            testRepository.save(test);
+
+            test.getQuestions().forEach(
+                    question -> {
+                        question.setTest(test);
+                        questionRepository.save(question);
+                        question.getAnswers().forEach(answer -> {
+                            answer.setQuestion(question);
+                            answerRepository.save(answer);
+                        });
                     });
-                });
+        }
+
     }
     @Transactional
     public void changeTestName(int testId,String name){

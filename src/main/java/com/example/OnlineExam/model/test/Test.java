@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -33,7 +34,7 @@ public class Test {
     @OneToMany(mappedBy = "test")
     private Set<Question> questions;
     @OneToMany(mappedBy = "test")
-    private ArrayList<Grade> grades;
+    private List<Grade> grades;
 
 
     public Subject getSubject() {
@@ -72,4 +73,12 @@ public class Test {
         return questions;
     }
 
+    public void setQuestions(Set<Question> questions) {
+        this.questions = questions;
+    }
+
+
+    public void setGrades(ArrayList<Grade> grades) {
+        this.grades = grades;
+    }
 }
