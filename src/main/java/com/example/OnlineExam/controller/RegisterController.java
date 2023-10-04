@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/register")
 public class RegisterController {
     PasswordEncoder passwordEncoder;
     UserRepository userRepository;

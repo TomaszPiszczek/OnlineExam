@@ -40,6 +40,8 @@ public class Security {
                 configurer
                         .requestMatchers("/student").hasRole("STUDENT")
                         .requestMatchers("/teacher").hasRole("TEACHER")
+                        .requestMatchers("api/subject/**").hasRole("TEACHER")
+                        .requestMatchers("api/test/createTest").hasRole("TEACHER")
                         .anyRequest().permitAll()
         );
 
