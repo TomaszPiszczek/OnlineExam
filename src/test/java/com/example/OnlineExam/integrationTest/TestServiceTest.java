@@ -136,12 +136,12 @@ public class TestServiceTest {
         com.example.OnlineExam.model.test.Test test1 = new com.example.OnlineExam.model.test.Test();
 
         test.setTestName("test");
-        test.setUser(user);
+        test.setTestCreator(user.getUsername());
         test.setQuestions(new HashSet<>(Collections.singletonList(question)));
         test.setSubject(subject);
 
         test1.setTestName("test2");
-        test1.setUser(user);
+        test1.setTestCreator(user.getUsername());
         test1.setQuestions(new HashSet<>(Collections.singletonList(question)));
         test1.setSubject(subject);
 
@@ -163,12 +163,12 @@ public class TestServiceTest {
         com.example.OnlineExam.model.test.Test test1 = new com.example.OnlineExam.model.test.Test();
 
         test.setTestName("test");
-        test.setUser(user);
+        test.setTestCreator(user.getUsername());
         test.setQuestions(new HashSet<>(Collections.singletonList(question)));
         test.setSubject(subject);
 
         test1.setTestName("test");
-        test1.setUser(user);
+        test1.setTestCreator(user.getUsername());
         test1.setQuestions(new HashSet<>(Collections.singletonList(question)));
         test1.setSubject(subject);
 

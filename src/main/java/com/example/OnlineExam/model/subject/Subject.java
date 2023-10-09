@@ -4,6 +4,7 @@ import com.example.OnlineExam.model.test.Test;
 import com.example.OnlineExam.model.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
@@ -20,7 +21,7 @@ public class Subject {
     @Column(name = "subject_id")
     private int id;
     @Column(name = "subject")
-    @NotBlank(message = "Subject name cannot be blank")
+    @NotNull(message = "Subject name cannot be blank")
     @Length(min = 2, max = 50, message = "Subject name must be between 2-50 characters")
     private String subjectName;
     @ManyToMany(mappedBy = "subjects")

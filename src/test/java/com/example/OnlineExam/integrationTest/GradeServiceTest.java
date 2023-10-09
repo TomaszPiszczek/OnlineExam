@@ -42,6 +42,8 @@ public class GradeServiceTest {
         insertUsers();
         User user = userRepository.getUserByUsername("test1").orElseThrow();
         com.example.OnlineExam.model.test.Test test = new com.example.OnlineExam.model.test.Test();
+        test.setTestCreator(user.getUsername());
+        test.setTestName("testName");
         testRepository.save(test);
 
         Grade grade = new Grade();

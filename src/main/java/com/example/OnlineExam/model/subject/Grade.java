@@ -28,7 +28,6 @@ public class Grade {
     private User user;
     @ManyToOne
     @JoinColumn(name = "test_id")
-    @NotNull(message = "test cannot be null")
     private Test test;
     @Column(name = "date")
     @NotNull(message = "date cannot be null")

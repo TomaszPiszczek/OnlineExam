@@ -1,6 +1,7 @@
 package com.example.OnlineExam.model.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -12,6 +13,7 @@ public class Authority {
     @Column(name = "id")
     private int id;
     @Column(name = "authority")
+    @NotNull(message = "Authority cannot be empty")
     private String authority;
     @ManyToOne()
     @JoinColumn(name = "user_id")

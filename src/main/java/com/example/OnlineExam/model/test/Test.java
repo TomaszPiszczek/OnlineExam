@@ -4,6 +4,7 @@ import com.example.OnlineExam.model.subject.Grade;
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -22,19 +23,22 @@ public class Test {
     @ManyToOne()
     @JoinColumn(name = "subject_id")
     private Subject subject;
-    @ManyToOne
-    @JoinColumn(name = "test_creator")
-    private User user;
+    @Column(name = "test_creator")
+    @NotNull(message = "Creator name cannot be null")
+    private String testCreator;
     @Column(name = "test_name")
+    @NotNull(message = "Test name cannot be null")
     private String testName;
     @Column(name = "date")
     private LocalDateTime dateTime = LocalDateTime.now();
-
 
     @OneToMany(mappedBy = "test")
     private Set<Question> questions;
     @OneToMany(mappedBy = "test")
     private List<Grade> grades;
+
+    @ManyToMany(mappedBy = "tests")
+    private Set<User> users;
 
 
     public Subject getSubject() {
@@ -45,12 +49,13 @@ public class Test {
         this.subject = subject;
     }
 
-    public User getUser() {
-        return user;
+
+    public String getTestCreator() {
+        return testCreator;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setTestCreator(String testCreator) {
+        this.testCreator = testCreator;
     }
 
     public String getTestName() {

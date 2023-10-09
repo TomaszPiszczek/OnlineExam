@@ -29,25 +29,23 @@ public class TestService {
         this.subjectRepository = subjectRepository;
         this.answerRepository = answerRepository;
     }
+
     @Transactional
     public void createTest(Test test){
-        if(test.getUser() == null) throw new UsernameNotFoundException();
+        if(userRepository.getUserByUsername(test.getTestCreator()).isEmpty()) throw new UsernameNotFoundException();
         if(test.getSubject() == null) throw new SubjectNotFoundException();
         if(test.getQuestions() == null) throw new QuestionNotFoundException();
         if(test.getQuestions().stream().anyMatch(answer -> answer.getAnswers() == null )) throw new AnswerNotFoundException();
-
-        if(getTests(test.getUser().getUsername()).stream().anyMatch(test1 -> test1.getTestName().equals(test.getTestName())))
+        if(getTests(test.getTestCreator()).stream().anyMatch(test1 -> test1.getTestName().equals(test.getTestName())))
         {
             throw new DuplicateTestException();
         }else {
-            User user = userRepository.getUserByUsername(test.getUser().getUsername()).orElseThrow(UsernameNotFoundException::new);
+            User user = userRepository.getUserByUsername(test.getTestCreator()).orElseThrow(UsernameNotFoundException::new);
             Subject subject = subjectRepository.getSubjectById(test.getSubject().getId()).orElseThrow(SubjectNotFoundException::new);
             Test saveTest = new Test();
 
-
-
             saveTest.setTestName(test.getTestName());
-            test.setUser(user);
+            test.setTestCreator(user.getUsername());
             test.setSubject(subject);
             testRepository.save(test);
 
@@ -70,7 +68,7 @@ public class TestService {
     }
     public List<Test> getTests(String userName){
         User user = userRepository.getUserByUsername(userName).orElseThrow(UsernameNotFoundException::new);
-        return testRepository.getTestsByUser(user).orElseThrow(TestNotFoundException::new);
+        return testRepository.getTestsByUserName(user.getUsername()).orElseThrow(TestNotFoundException::new);
     }
 
 }

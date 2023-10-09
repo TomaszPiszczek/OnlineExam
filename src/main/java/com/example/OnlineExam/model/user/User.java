@@ -56,8 +56,15 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "subject_id")
     )
     private Set<Subject> subjects;
-    @OneToMany(mappedBy = "user")
-    Set<Test> tests;
+    @ManyToMany(
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST })
+    @JoinTable(
+            name = "student_test",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "test_id")
+    )
+    private List<Test> tests;
+
     @OneToMany(mappedBy = "user")
     List<Grade> grades;
 

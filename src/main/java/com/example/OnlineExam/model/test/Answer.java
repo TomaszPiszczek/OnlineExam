@@ -1,6 +1,7 @@
 package com.example.OnlineExam.model.test;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -14,6 +15,7 @@ public class Answer {
     @JoinColumn(name = "question_id")
     private Question question;
     @Column(name = "answer")
+    @NotNull(message = "Answer cannot be empty")
     private String answer;
     @Column(name = "correct")
     private boolean correct;
