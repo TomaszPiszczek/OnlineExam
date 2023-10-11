@@ -30,17 +30,14 @@ public class UserService {
     public void addUserRole(String userName, String roleName) {
         User user = userRepository.getUserByUsername(userName).orElseThrow(UsernameNotFoundException::new);
 
-        Set<Authority> userRoles = user.getRoles();
 
-        if(userRoles.stream()
+        if(user.getRoles().stream()
                 .noneMatch(role -> role.getAuthority().equals(roleName))){
 
             Authority authority = new Authority();
             authority.setAuthority("ROLE_"+roleName);
-            authority.setUser(user);
             authorityRepository.save(authority);
-            userRoles.add(authority);
-            user.setRoles(userRoles);
+            user.addRole(authority);
         }
     }
     @Transactional
