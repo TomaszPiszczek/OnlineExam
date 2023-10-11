@@ -11,6 +11,7 @@ import com.example.OnlineExam.repository.test.AnswerRepository;
 import com.example.OnlineExam.repository.test.QuestionRepository;
 import com.example.OnlineExam.repository.test.TestRepository;
 import com.example.OnlineExam.repository.user.UserRepository;
+import com.example.OnlineExam.service.SubjectService;
 import com.example.OnlineExam.service.TestService;
 import jakarta.transaction.Transactional;
 import org.junit.ClassRule;
@@ -44,7 +45,7 @@ public class TestServiceTest {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    SubjectRepository subjectRepository;
+    SubjectService subjectService;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -59,6 +60,7 @@ public class TestServiceTest {
     private Question question;
     private Answer answer;
     private Subject subject;
+    private Integer testId;
 
     @BeforeEach
     public void setUp(){
@@ -71,7 +73,7 @@ public class TestServiceTest {
 
         this.subject = new Subject();
         this.subject.setSubjectName("math");
-        subjectRepository.save(subject);
+        subjectService.createSubject(subject);
         questionRepository.save(question);
         answerRepository.save(answer);
     }
@@ -85,7 +87,6 @@ public class TestServiceTest {
         insertUsers();
         Subject subject = new Subject();
         subject.setSubjectName("math");
-        subjectRepository.save(subject);
         com.example.OnlineExam.model.test.Test test = new com.example.OnlineExam.model.test.Test();
 
 
@@ -100,7 +101,6 @@ public class TestServiceTest {
         insertUsers();
         Subject subject = new Subject();
         subject.setSubjectName("math");
-        subjectRepository.save(subject);
         com.example.OnlineExam.model.test.Test test = new com.example.OnlineExam.model.test.Test();
         test.setTestCreator("test");
         test.setSubject(subject);
@@ -116,7 +116,6 @@ public class TestServiceTest {
         insertUsers();
         Subject subject = new Subject();
         subject.setSubjectName("math");
-        subjectRepository.save(subject);
         com.example.OnlineExam.model.test.Test test = new com.example.OnlineExam.model.test.Test();
         test.setTestCreator("test");
         test.setSubject(subject);
@@ -134,7 +133,6 @@ public class TestServiceTest {
         insertUsers();
         Subject subject = new Subject();
         subject.setSubjectName("math");
-        subjectRepository.save(subject);
 
         String json = "{\"testName\":\"Test Math1\",\"testCreator\":\"test\",\"subject\":{\"id\":" + (subject.getId()+100) + "},\"questions\":[{\"question\":\"2 + 2?\",\"answers\":[{\"answer\":\"3\",\"correct\":false},{\"answer\":\"4\",\"correct\":true},{\"answer\":\"5\",\"correct\":false},{\"answer\":\"6\",\"correct\":false}]},{\"question\":\"3 - 2?\",\"answers\":[{\"answer\":\"0\",\"correct\":false},{\"answer\":\"1\",\"correct\":true},{\"answer\":\"2\",\"correct\":false},{\"answer\":\"3\",\"correct\":false}]}]}";
         //then
@@ -147,9 +145,7 @@ public class TestServiceTest {
     public void createTestWithValidJSON() throws Exception {
         //given
         insertUsers();
-        Subject subject = new Subject();
-        subject.setSubjectName("math");
-        subjectRepository.save(subject);
+
 
 
         String json = "{\"testName\":\"Test Math1\",\"testCreator\":\"test\",\"subject\":{\"id\":" + subject.getId() + "},\"questions\":[{\"question\":\"2 + 2?\",\"answers\":[{\"answer\":\"3\",\"correct\":false},{\"answer\":\"4\",\"correct\":true},{\"answer\":\"5\",\"correct\":false},{\"answer\":\"6\",\"correct\":false}]},{\"question\":\"3 - 2?\",\"answers\":[{\"answer\":\"0\",\"correct\":false},{\"answer\":\"1\",\"correct\":true},{\"answer\":\"2\",\"correct\":false},{\"answer\":\"3\",\"correct\":false}]}]}";
@@ -219,8 +215,8 @@ public class TestServiceTest {
         insertUsers();
         createTest();
         //when
-        testService.addUsersToTest(Set.of("student","student1"),"testName");
-        com.example.OnlineExam.model.test.Test test = testRepository.getTestByTestName("testName").orElseThrow(TestNotFoundException::new);
+        testService.addUsersToTest(Set.of("student","student1"),testId);
+        com.example.OnlineExam.model.test.Test test = testRepository.getTestById(testId).orElseThrow(TestNotFoundException::new);
 
         //then
         assertEquals(2,test.getUsers().size());
@@ -231,8 +227,8 @@ public class TestServiceTest {
         insertUsers();
         createTest();
         //when
-        testService.addUsersToTest(Set.of("student","student1"),"testName");
-        com.example.OnlineExam.model.test.Test test = testRepository.getTestByTestName("testName").orElseThrow();
+        testService.addUsersToTest(Set.of("student","student1"),testId);
+        com.example.OnlineExam.model.test.Test test = testRepository.getTestById(testId).orElseThrow();
 
         testService.removeUsersFromTest("student","testName");
         //then
@@ -248,15 +244,13 @@ public class TestServiceTest {
     }
 
     private void createTest(){
-        Subject subject = new Subject();
-        subject.setSubjectName("math");
-        subjectRepository.save(subject);
         com.example.OnlineExam.model.test.Test test = new com.example.OnlineExam.model.test.Test();
         test.setTestCreator("test");
         test.setSubject(subject);
         test.setQuestions(new HashSet<>(Collections.singletonList(question)));
         test.setTestName("testName");
         testRepository.save(test);
+        testId = test.getId();
     }
 
 

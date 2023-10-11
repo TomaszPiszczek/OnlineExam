@@ -5,21 +5,25 @@ import com.example.OnlineExam.dto.mapper.TestMapper;
 import com.example.OnlineExam.exception.*;
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.test.Test;
+import com.example.OnlineExam.model.user.SchoolClass;
 import com.example.OnlineExam.model.user.User;
 import com.example.OnlineExam.repository.subject.SubjectRepository;
 import com.example.OnlineExam.repository.test.AnswerRepository;
 import com.example.OnlineExam.repository.test.QuestionRepository;
 import com.example.OnlineExam.repository.test.TestRepository;
+import com.example.OnlineExam.repository.user.SchoolClassRepository;
 import com.example.OnlineExam.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
+import java.util.stream.Collectors;
+@Slf4j
 @Service
 public class TestService {
     TestRepository testRepository;
@@ -28,14 +32,15 @@ public class TestService {
     QuestionRepository questionRepository;
     AnswerRepository answerRepository;
     TestMapper testMapper;
-
-    public TestService(TestRepository testRepository, UserRepository userRepository, SubjectRepository subjectRepository, QuestionRepository questionRepository, AnswerRepository answerRepository, TestMapper testMapper) {
+    SchoolClassRepository schoolClassRepository;
+    public TestService(TestRepository testRepository, UserRepository userRepository, SubjectRepository subjectRepository, QuestionRepository questionRepository, AnswerRepository answerRepository, TestMapper testMapper, SchoolClassRepository schoolClassRepository) {
         this.testRepository = testRepository;
         this.userRepository = userRepository;
         this.subjectRepository = subjectRepository;
         this.questionRepository = questionRepository;
         this.answerRepository = answerRepository;
         this.testMapper = testMapper;
+        this.schoolClassRepository = schoolClassRepository;
     }
 
     @Transactional
@@ -59,13 +64,18 @@ public class TestService {
         }
     }
     @Transactional
-    public void addUsersToTest(Set<String> userNames, String testName){
-        Test test = testRepository.getTestByTestName(testName).orElseThrow(TestNotFoundException::new);
+    public void addUsersToTest(Set<String> userNames, int id){
+        Test test = testRepository.getTestById(id).orElseThrow(TestNotFoundException::new);
         for (String name:userNames
         ) {
             User user = userRepository.getUserByUsername(name).orElseThrow(UsernameNotFoundException::new);
             if(!user.getTests().contains(test)){
+                log.warn(user.getUsername() + "Inside add user to test");
+
                 user.addTest(test);
+
+                user.getTests().forEach(test1 -> log.warn(test1.getTestName() + "user"));
+                test.getUsers().forEach(user1 -> log.warn(user1.getUsername() + "test"));
             }
         }
     }
@@ -76,22 +86,32 @@ public class TestService {
         test.setTestName(name);
     }
     public List<TestDTO> getTests(String userName){
-        if(userRepository.getUserByUsername(userName).isEmpty()) throw new UsernameNotFoundException();
         User user = userRepository.getUserByUsername(userName).orElseThrow(UsernameNotFoundException::new);
+        List<TestDTO> tests = new ArrayList<>();
+        List<Test> test;
         if(user.getRoles().stream().anyMatch(role -> role.getAuthority().contains("ROLE_TEACHER"))){
-            List<TestDTO> tests = new ArrayList<>();
-            List<Test> test =  testRepository.getTestsByTestCreator(userName).orElseThrow(TestNotFoundException::new);
 
+            test =  testRepository.getTestsByTestCreator(userName).orElseThrow(TestNotFoundException::new);
             test.forEach(test1 -> tests.add(testMapper.mapToTestDTO(test1)));
-
-            //return testRepository.getTestsByTestCreator(userName).orElseThrow(TestNotFoundException::new);
             return tests;
-
         }
-        return null;
-       // return testRepository.getTestsByUserName(userName).orElseThrow(TestNotFoundException::new);
-    }
 
+        test=testRepository.getTestsByUserName(userName).orElseThrow(TestNotFoundException::new);
+        test.forEach(test1 -> tests.add(testMapper.mapToTestDTO(test1)));
+        return tests;
+    }
+    //todo testsForThisMethod
+    @Transactional
+    public void addTestToClass(String className,Integer testId){
+        SchoolClass schoolClass = schoolClassRepository.getSchoolClassByName(className).orElseThrow(SchoolClassNotFoundException::new);
+        Set<String> users = schoolClass.getUsers()
+                .stream()
+                .map(User::getUsername)
+                .collect(Collectors.toSet());
+
+        users.forEach(log::warn);
+        addUsersToTest(users,testId);
+    }
 
     private void addQuestionsAndAnswersToTest(Test test){
         test.getQuestions().forEach(
