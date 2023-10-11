@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "class")
@@ -14,12 +15,12 @@ public class SchoolClass {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_id")
     private int classId;
-    @Column(name = "class")
+    @Column(name = "class",unique = true)
     @NotNull(message = "Class name cannot be blank")
     @Length(min = 2, max = 50, message = "Class name must be between 2-50 characters")
     private String name;
     @OneToMany(mappedBy = "schoolClass")
-    private List<User> users;
+    private Set<User> users;
 
 
     public String getName() {
@@ -30,7 +31,7 @@ public class SchoolClass {
         this.name = name;
     }
 
-    public List<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 }

@@ -17,6 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
@@ -38,8 +40,8 @@ public class ClassServiceTest {
         //given
         insertUsers();
         //when
-        classService.saveUserToClass("test1","4B");
-        classService.saveUserToClass("test1","4A");
+        classService.saveUsersToClass(List.of("test1"),"4B");
+        classService.saveUsersToClass(List.of("test1"),"4A");
         User user = userRepository.getUserByUsername("test1").orElseThrow();
         //then
         assertEquals("4A",user.getSchoolClass().getName());
@@ -49,8 +51,8 @@ public class ClassServiceTest {
         //given
         insertUsers();
         //when
-        classService.saveUserToClass("test1","4B");
-        classService.removeUserFromClass("test1");
+        classService.saveUsersToClass(List.of("test1"),"4B");
+        classService.removeUserFromClass(List.of("test1"));
 
         User user = userRepository.getUserByUsername("test1").orElseThrow();
         //then
@@ -61,8 +63,8 @@ public class ClassServiceTest {
         //given
         insertUsers();
         //when
-        classService.saveUserToClass("test1","4B");
-        classService.removeUserFromClass("test1");
+        classService.saveUsersToClass(List.of("test1"),"4B");
+        classService.removeUserFromClass(List.of("test1"));
 
         User user = userRepository.getUserByUsername("test1").orElseThrow();
         SchoolClass schoolClass = schoolClassRepository.getSchoolClassByName("4B").orElseThrow();
@@ -80,7 +82,7 @@ public class ClassServiceTest {
         insertUsers();
         //when
         Exception exception = assertThrows(SchoolClassNotFoundException.class,
-                () -> classService.saveUserToClass("test1", "NotExistingClass"));
+                () -> classService.saveUsersToClass(List.of("test1"), "NotExistingClass"));
         //then
         assertEquals("Class not found",exception.getMessage());
     }
@@ -90,7 +92,7 @@ public class ClassServiceTest {
         insertUsers();
         //when
         Exception exception = assertThrows(UsernameNotFoundException.class,
-                () -> classService.saveUserToClass("notExistingUser", "4B"));
+                () -> classService.saveUsersToClass(List.of("notExistingUser"), "4B"));
         //then
         assertEquals("The user with the provided username does not exist",exception.getMessage());
     }

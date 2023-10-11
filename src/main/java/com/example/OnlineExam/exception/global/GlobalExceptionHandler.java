@@ -43,5 +43,13 @@ public class GlobalExceptionHandler {
         errorObject.setMessage("User already exist");
         return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorObject> illegalStateException(IllegalStateException ex, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorObject.setTimestamp(new Date());
+        errorObject.setMessage(ex.getMessage());
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
 
 }
