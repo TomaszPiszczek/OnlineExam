@@ -39,7 +39,7 @@ public class SubjectController {
     }
 
     @PostMapping("/addUserToSubject")
-    public ResponseEntity<String> addUserToSubject(@RequestBody String userName,@RequestParam String subjectName){
+    public ResponseEntity<String> addUserToSubject(@RequestParam String userName,@RequestParam String subjectName){
         subjectService.addUserToSubject(userName,subjectName);
         return ResponseEntity.ok("User added to subject");
     }
