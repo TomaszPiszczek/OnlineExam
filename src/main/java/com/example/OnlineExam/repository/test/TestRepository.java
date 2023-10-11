@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface TestRepository extends JpaRepository<Test,Integer> {
     Optional<Test> getTestById(int testId);
@@ -15,8 +16,13 @@ public interface TestRepository extends JpaRepository<Test,Integer> {
             FROM public.test t
             INNER JOIN public.student_test st ON t.test_id = st.test_id
             INNER JOIN public."user" u ON st.user_id = u.user_id
-            WHERE u.username = 'desired_username'""",nativeQuery = true)
+            WHERE u.username = :userName""",nativeQuery = true)
     Optional<List<Test>> getTestsByUserName(String userName);
+
+    Optional<Test> getTestByTestName(String testName);
+
+    Optional<List<Test>> getTestsByTestCreator(String testCreator);
+
 
 
 }

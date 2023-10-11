@@ -1,5 +1,6 @@
 package com.example.OnlineExam.controller;
 
+import com.example.OnlineExam.dto.TestDTO;
 import com.example.OnlineExam.model.test.Test;
 import com.example.OnlineExam.model.user.User;
 import com.example.OnlineExam.repository.user.UserRepository;
@@ -32,13 +33,18 @@ public class TestController {
 
         return ResponseEntity.ok("Test added");
     }
-    //fixme TestDAO return from getTests
     @GetMapping("/getTests")
-    public ResponseEntity<List<Test>> getTests(@RequestParam String userName){
-        List<Test> tests = testService.getTests(userName);
+    public ResponseEntity<List<TestDTO>> getTests(@RequestParam String userName){
+        List<TestDTO> tests = testService.getTests(userName);
 
         return ResponseEntity.ok(tests);
     }
+   /* @PostMapping("/addUserToTest")
+    public ResponseEntity<String> addUserToTest(@RequestBody Test test){
+        testService.createTest(test);
+
+        return ResponseEntity.ok("Test added");
+    }*/
 
 
 }

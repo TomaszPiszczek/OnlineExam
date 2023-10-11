@@ -4,7 +4,6 @@ import com.example.OnlineExam.model.subject.Grade;
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.test.Test;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -63,7 +62,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "test_id")
     )
-    private List<Test> tests;
+    private Set<Test> tests;
 
     @OneToMany(mappedBy = "user")
     List<Grade> grades;
@@ -80,6 +79,7 @@ public class User {
         this.email = email;
         this.roles = new HashSet<>();
         this.subjects = new HashSet<>();
+        this.tests = new HashSet<>();
     }
 
 
@@ -106,6 +106,7 @@ public class User {
 
 
     public Set<Authority> getRoles() {
+        if(roles == null) roles = new HashSet<>();
         return roles;
     }
 
@@ -120,6 +121,14 @@ public class User {
         this.subjects.add(subject);
         subject.getUsers().add(this);
     }
+    public void addRole(Authority authority){
+        if(roles == null){
+            roles = new HashSet<>();
+        }
+        this.roles.add(authority);
+        authority.setUser(this);
+    }
+
     public void removeSubject(Subject subject){
         if(subjects == null){
             subjects = new HashSet<>();
@@ -155,4 +164,26 @@ public class User {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
+    public Set<Test> getTests() {
+
+        return tests;
+    }
+
+    public void removeTest(Test test){
+        if(tests == null){
+            tests = new HashSet<>();
+        }
+        this.tests.remove(test);
+        test.getUsers().remove(this);
+    }
+
+    public void addTest(Test test){
+        if(tests == null){
+            tests = new HashSet<>();
+        }
+        this.tests.add(test);
+        test.getUsers().add(this);
+    }
+
 }
