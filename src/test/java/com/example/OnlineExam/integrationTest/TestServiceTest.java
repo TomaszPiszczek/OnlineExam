@@ -1,13 +1,11 @@
 package com.example.OnlineExam.integrationTest;
 
 import com.example.OnlineExam.db.PostgresqlContainer;
-import com.example.OnlineExam.exception.DuplicateTestException;
-import com.example.OnlineExam.exception.UsernameNotFoundException;
+import com.example.OnlineExam.exception.*;
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.test.Answer;
 import com.example.OnlineExam.model.test.Question;
 import com.example.OnlineExam.model.user.User;
-
 import com.example.OnlineExam.repository.subject.SubjectRepository;
 import com.example.OnlineExam.repository.test.AnswerRepository;
 import com.example.OnlineExam.repository.test.QuestionRepository;
@@ -31,13 +29,13 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-@AutoConfigureMockMvc
 @Transactional
+@AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class TestServiceTest {
@@ -81,7 +79,7 @@ public class TestServiceTest {
 
 
     @Test
-    public void testThrowUserNotFoundExceptionWithWrongUsernameJSON() throws Exception {
+    public void testThrowUserNotFoundExceptionWithWrongUsername() {
 
         //given
         insertUsers();
@@ -96,6 +94,41 @@ public class TestServiceTest {
 
     }
     @Test
+    public void testThrowQuestionNotFoundExceptionWithNullQuestion() {
+
+        //given
+        insertUsers();
+        Subject subject = new Subject();
+        subject.setSubjectName("math");
+        subjectRepository.save(subject);
+        com.example.OnlineExam.model.test.Test test = new com.example.OnlineExam.model.test.Test();
+        test.setTestCreator("test");
+        test.setSubject(subject);
+
+
+        //then
+        assertThrows(QuestionNotFoundException.class,() -> testService.createTest(test));
+    }
+    @Test
+    public void testThrowAnswerNotFoundExceptionWithNullQuestion() {
+
+        //given
+        insertUsers();
+        Subject subject = new Subject();
+        subject.setSubjectName("math");
+        subjectRepository.save(subject);
+        com.example.OnlineExam.model.test.Test test = new com.example.OnlineExam.model.test.Test();
+        test.setTestCreator("test");
+        test.setSubject(subject);
+        question.setAnswers(null);
+        test.setQuestions(new HashSet<>(Collections.singletonList(question)));
+        test.setTestName("testName");
+
+        //then
+        assertThrows(AnswerNotFoundException.class,() -> testService.createTest(test));
+    }
+
+    @Test
     public void testThrowSubjectNotFoundExceptionWithWrongSubjectIdJSON() throws Exception {
         //given
         insertUsers();
@@ -103,7 +136,7 @@ public class TestServiceTest {
         subject.setSubjectName("math");
         subjectRepository.save(subject);
 
-        String json = "{\"testName\":\"Test Math2\",\"user\":{\"username\":\"test\"},\"subject\":{\"id\":1421},\"questions\":[{\"question\":\"2 + 2?\",\"answers\":[{\"answer\":\"3\",\"correct\":false},{\"answer\":\"4\",\"correct\":true},{\"answer\":\"5\",\"correct\":false},{\"answer\":\"6\",\"correct\":false}]},{\"question\":\"3 - 2?\",\"answers\":[{\"answer\":\"0\",\"correct\":false},{\"answer\":\"1\",\"correct\":true},{\"answer\":\"2\",\"correct\":false},{\"answer\":\"3\",\"correct\":false}]}]}";
+        String json = "{\"testName\":\"Test Math1\",\"testCreator\":\"test\",\"subject\":{\"id\":" + (subject.getId()+100) + "},\"questions\":[{\"question\":\"2 + 2?\",\"answers\":[{\"answer\":\"3\",\"correct\":false},{\"answer\":\"4\",\"correct\":true},{\"answer\":\"5\",\"correct\":false},{\"answer\":\"6\",\"correct\":false}]},{\"question\":\"3 - 2?\",\"answers\":[{\"answer\":\"0\",\"correct\":false},{\"answer\":\"1\",\"correct\":true},{\"answer\":\"2\",\"correct\":false},{\"answer\":\"3\",\"correct\":false}]}]}";
         //then
         mockMvc.perform(MockMvcRequestBuilders.post("/createTest")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -119,7 +152,7 @@ public class TestServiceTest {
         subjectRepository.save(subject);
 
 
-        String json = "{\"testName\":\"Test Math1\",\"user\":{\"username\":\"test\"},\"subject\":{\"id\":" + subject.getId() + "},\"questions\":[{\"question\":\"2 + 2?\",\"answers\":[{\"answer\":\"3\",\"correct\":false},{\"answer\":\"4\",\"correct\":true},{\"answer\":\"5\",\"correct\":false},{\"answer\":\"6\",\"correct\":false}]},{\"question\":\"3 - 2?\",\"answers\":[{\"answer\":\"0\",\"correct\":false},{\"answer\":\"1\",\"correct\":true},{\"answer\":\"2\",\"correct\":false},{\"answer\":\"3\",\"correct\":false}]}]}";
+        String json = "{\"testName\":\"Test Math1\",\"testCreator\":\"test\",\"subject\":{\"id\":" + subject.getId() + "},\"questions\":[{\"question\":\"2 + 2?\",\"answers\":[{\"answer\":\"3\",\"correct\":false},{\"answer\":\"4\",\"correct\":true},{\"answer\":\"5\",\"correct\":false},{\"answer\":\"6\",\"correct\":false}]},{\"question\":\"3 - 2?\",\"answers\":[{\"answer\":\"0\",\"correct\":false},{\"answer\":\"1\",\"correct\":true},{\"answer\":\"2\",\"correct\":false},{\"answer\":\"3\",\"correct\":false}]}]}";
        //then
         mockMvc.perform(MockMvcRequestBuilders.post("/createTest")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -149,8 +182,9 @@ public class TestServiceTest {
 
         testService.createTest(test);
         testService.createTest(test1);
+        List<com.example.OnlineExam.model.test.Test> tests = testRepository.getTestsByTestCreator("test").orElseThrow();
         //then
-        assertEquals(2,testService.getTests("test").size());
+        assertEquals(2,tests.size());
     }
 
     @Test
@@ -179,12 +213,50 @@ public class TestServiceTest {
         assertThrows(DuplicateTestException.class,() -> testService.createTest(test1));
     }
 
+    @Test
+    public void addUsersToTest(){
+        //given
+        insertUsers();
+        createTest();
+        //when
+        testService.addUsersToTest(Set.of("student","student1"),"testName");
+        com.example.OnlineExam.model.test.Test test = testRepository.getTestByTestName("testName").orElseThrow(TestNotFoundException::new);
+
+        //then
+        assertEquals(2,test.getUsers().size());
+    }
+    @Test
+    public void removeUsersFromTest(){
+        //given
+        insertUsers();
+        createTest();
+        //when
+        testService.addUsersToTest(Set.of("student","student1"),"testName");
+        com.example.OnlineExam.model.test.Test test = testRepository.getTestByTestName("testName").orElseThrow();
+
+        testService.removeUsersFromTest("student","testName");
+        //then
+        assertEquals(1,test.getUsers().size());
+    }
+
 
     private void insertUsers() {
-        subjectRepository.flush();
 
         userRepository.save(new User("test", "password", true, "name", "surname", "email"));
+        userRepository.save(new User("student", "password", true, "name", "surname", "email"));
+        userRepository.save(new User("student1", "password", true, "name", "surname", "email"));
+    }
 
+    private void createTest(){
+        Subject subject = new Subject();
+        subject.setSubjectName("math");
+        subjectRepository.save(subject);
+        com.example.OnlineExam.model.test.Test test = new com.example.OnlineExam.model.test.Test();
+        test.setTestCreator("test");
+        test.setSubject(subject);
+        test.setQuestions(new HashSet<>(Collections.singletonList(question)));
+        test.setTestName("testName");
+        testRepository.save(test);
     }
 
 
