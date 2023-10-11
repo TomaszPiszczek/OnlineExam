@@ -37,7 +37,13 @@ public class SubjectService {
             user.addSubject(subject);
         }
     }
-
+    @Transactional
+    public void createSubject(Subject subject){
+        if(subjectRepository.existsSubjectsBySubjectName(subject.getSubjectName())){
+            throw new IllegalStateException("Subject already exist");
+        }
+        subjectRepository.save(subject);
+    }
     @Transactional
     public void addUsersToSubject(List<String> userNames, String subjectName){
         Subject subject = subjectRepository.getSubjectBySubjectName(subjectName).orElse(new Subject());

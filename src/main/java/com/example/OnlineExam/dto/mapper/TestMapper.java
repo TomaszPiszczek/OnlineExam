@@ -23,7 +23,9 @@ public class TestMapper {
                 test.getTestName(),
                 test.getTestCreator(),
                 test.getDateTime(),
+                test.getSubject().getSubjectName(),
                 questionDTOs
+
         );
     }
 

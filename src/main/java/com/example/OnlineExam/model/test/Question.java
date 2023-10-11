@@ -16,7 +16,6 @@ public class Question {
     @Column(name = "question_id")
     private int questionId;
     @ManyToOne()
-    @NotNull(message = "Test cannot be null")
     @JoinColumn(name = "test_id")
     private Test test;
     @Column(name = "question")

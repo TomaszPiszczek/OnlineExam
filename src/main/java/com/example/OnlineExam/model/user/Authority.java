@@ -39,6 +39,7 @@ public class Authority {
         return authority;
     }
 
+
     public void setAuthority(String authority) {
         this.authority = authority;
     }

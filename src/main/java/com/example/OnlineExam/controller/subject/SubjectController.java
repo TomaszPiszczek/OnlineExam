@@ -1,4 +1,4 @@
-package com.example.OnlineExam.controller;
+package com.example.OnlineExam.controller.subject;
 
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.test.Test;
@@ -24,11 +24,9 @@ public class SubjectController {
         this.subjectService = subjectService;
         this.subjectRepository = subjectRepository;
     }
-        //todo add user creator to subject
     @PostMapping("/createSubject")
     public ResponseEntity<String> createSubject(@RequestBody Subject subject){
-        subjectRepository.save(subject);
-
+        subjectService.createSubject(subject);
         return ResponseEntity.ok("Subject added");
     }
 

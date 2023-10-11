@@ -3,12 +3,15 @@ package com.example.OnlineExam.model.test;
 import com.example.OnlineExam.model.subject.Grade;
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,15 +34,16 @@ public class Test {
     private String testName;
     @Column(name = "date")
     private LocalDateTime dateTime = LocalDateTime.now();
-
     @OneToMany(mappedBy = "test")
     private Set<Question> questions;
     @OneToMany(mappedBy = "test")
     private List<Grade> grades;
-
     @ManyToMany(mappedBy = "tests")
     private Set<User> users;
 
+    public int getId() {
+        return id;
+    }
 
     public Subject getSubject() {
         return subject;
@@ -66,13 +70,6 @@ public class Test {
         this.testName = testName;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
 
     public Set<Question> getQuestions() {
         return questions;
@@ -82,8 +79,14 @@ public class Test {
         this.questions = questions;
     }
 
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
 
-    public void setGrades(ArrayList<Grade> grades) {
-        this.grades = grades;
+    public Set<User> getUsers() {
+        if(users == null){
+            users = new HashSet<>();
+        }
+        return users;
     }
 }

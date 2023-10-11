@@ -20,7 +20,7 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "subject_id")
     private int id;
-    @Column(name = "subject")
+    @Column(name = "subject",unique = true)
     @NotNull(message = "Subject name cannot be blank")
     @Length(min = 2, max = 50, message = "Subject name must be between 2-50 characters")
     private String subjectName;

@@ -1,4 +1,4 @@
-package com.example.OnlineExam.controller;
+package com.example.OnlineExam.controller.user;
 
 import com.example.OnlineExam.model.user.User;
 import com.example.OnlineExam.repository.user.UserRepository;
