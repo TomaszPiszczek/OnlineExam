@@ -4,4 +4,7 @@ public record AnswerDTO(
         String answer,
         boolean correct
 ) {
+    public boolean isCorrect() {
+        return correct;
+    }
 }

@@ -83,6 +83,10 @@ public class Test {
         return dateTime;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public Set<User> getUsers() {
         if(users == null){
             users = new HashSet<>();

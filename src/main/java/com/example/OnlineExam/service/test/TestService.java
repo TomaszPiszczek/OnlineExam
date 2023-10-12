@@ -1,4 +1,4 @@
-package com.example.OnlineExam.service;
+package com.example.OnlineExam.service.test;
 
 import com.example.OnlineExam.dto.TestDTO;
 import com.example.OnlineExam.dto.mapper.TestMapper;
@@ -70,12 +70,9 @@ public class TestService {
         ) {
             User user = userRepository.getUserByUsername(name).orElseThrow(UsernameNotFoundException::new);
             if(!user.getTests().contains(test)){
-                log.warn(user.getUsername() + "Inside add user to test");
 
                 user.addTest(test);
 
-                user.getTests().forEach(test1 -> log.warn(test1.getTestName() + "user"));
-                test.getUsers().forEach(user1 -> log.warn(user1.getUsername() + "test"));
             }
         }
     }
@@ -100,10 +97,10 @@ public class TestService {
         test.forEach(test1 -> tests.add(testMapper.mapToTestDTO(test1)));
         return tests;
     }
-    //todo testsForThisMethod
     @Transactional
     public void addTestToClass(String className,Integer testId){
         SchoolClass schoolClass = schoolClassRepository.getSchoolClassByName(className).orElseThrow(SchoolClassNotFoundException::new);
+        if(schoolClass.getUsers() == null) throw new IllegalStateException("Class is empty");
         Set<String> users = schoolClass.getUsers()
                 .stream()
                 .map(User::getUsername)
@@ -112,7 +109,6 @@ public class TestService {
         users.forEach(log::warn);
         addUsersToTest(users,testId);
     }
-
     private void addQuestionsAndAnswersToTest(Test test){
         test.getQuestions().forEach(
                 question -> {

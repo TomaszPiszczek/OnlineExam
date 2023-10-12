@@ -2,7 +2,6 @@ package com.example.OnlineExam.service;
 
 import com.example.OnlineExam.exception.SchoolClassNotFoundException;
 import com.example.OnlineExam.exception.UsernameNotFoundException;
-import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.user.SchoolClass;
 import com.example.OnlineExam.model.user.User;
 import com.example.OnlineExam.repository.user.SchoolClassRepository;
@@ -11,18 +10,19 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
-public class ClassService {
+public class SchoolClassService {
     UserRepository userRepository;
     SchoolClassRepository schoolClassRepository;
 
-    public ClassService(UserRepository userRepository, SchoolClassRepository schoolClassRepository) {
+    public SchoolClassService(UserRepository userRepository, SchoolClassRepository schoolClassRepository) {
         this.userRepository = userRepository;
         this.schoolClassRepository = schoolClassRepository;
     }
     @Transactional
-    public void saveUsersToClass(List<String> users, String schoolClassName){
+    public void saveUsersToClass(Set<String> users, String schoolClassName){
         SchoolClass schoolClass1 =  schoolClassRepository.getSchoolClassByName(schoolClassName).orElseThrow(SchoolClassNotFoundException::new);
         for (String userName : users
              ) {
@@ -44,7 +44,7 @@ public class ClassService {
     @Transactional
     public void createClass(SchoolClass schoolClass){
         if(schoolClassRepository.existsByName(schoolClass.getName())){
-            throw new IllegalStateException("Subject already exist");
+            throw new IllegalStateException("Class already exist");
         }
         schoolClassRepository.save(schoolClass);
     }

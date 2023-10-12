@@ -20,6 +20,7 @@ public class TestMapper {
                 .collect(Collectors.toList());
 
         return new TestDTO(
+                test.getId(),
                 test.getTestName(),
                 test.getTestCreator(),
                 test.getDateTime(),
@@ -37,7 +38,8 @@ public class TestMapper {
 
         return new QuestionDTO(
                 question.getQuestion(),
-                answerDTOs
+                answerDTOs,
+                question.getPoints()
         );
     }
 

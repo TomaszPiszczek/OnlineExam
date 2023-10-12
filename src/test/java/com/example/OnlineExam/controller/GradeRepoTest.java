@@ -1,4 +1,4 @@
-package com.example.OnlineExam.integrationTest;
+package com.example.OnlineExam.controller;
 
 import com.example.OnlineExam.db.PostgresqlContainer;
 import com.example.OnlineExam.model.subject.Grade;
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public class GradeServiceTest {
+public class GradeRepoTest {
     @ClassRule
     public static PostgreSQLContainer postgreSQLContainer = PostgresqlContainer.getInstance();
     @Autowired

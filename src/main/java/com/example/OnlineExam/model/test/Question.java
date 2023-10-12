@@ -26,6 +26,10 @@ public class Question {
     private Set<Answer> answers;
 
 
+    @NotNull(message = "Points cannot be blank")
+    private Integer points;
+
+
     public void setQuestion(String question) {
         this.question = question;
     }
@@ -56,5 +60,14 @@ public class Question {
 
     public void setAnswers(Set<Answer> answers) {
         this.answers = answers;
+    }
+
+    public Integer getPoints() {
+        return points;
+    }
+
+
+    public void setPoints(Integer points) {
+        this.points = points;
     }
 }

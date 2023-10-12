@@ -7,7 +7,7 @@ import com.example.OnlineExam.model.user.SchoolClass;
 import com.example.OnlineExam.model.user.User;
 import com.example.OnlineExam.repository.user.SchoolClassRepository;
 import com.example.OnlineExam.repository.user.UserRepository;
-import com.example.OnlineExam.service.ClassService;
+import com.example.OnlineExam.service.SchoolClassService;
 import jakarta.transaction.Transactional;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +30,7 @@ public class ClassServiceTest {
     public static PostgreSQLContainer postgreSQLContainer = PostgresqlContainer.getInstance();
 
     @Autowired
-    ClassService classService;
+    SchoolClassService schoolClassService;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -40,8 +41,8 @@ public class ClassServiceTest {
         //given
         insertUsers();
         //when
-        classService.saveUsersToClass(List.of("test1"),"4B");
-        classService.saveUsersToClass(List.of("test1"),"4A");
+        schoolClassService.saveUsersToClass(Set.of("test1"),"4B");
+        schoolClassService.saveUsersToClass(Set.of("test1"),"4A");
         User user = userRepository.getUserByUsername("test1").orElseThrow();
         //then
         assertEquals("4A",user.getSchoolClass().getName());
@@ -51,8 +52,8 @@ public class ClassServiceTest {
         //given
         insertUsers();
         //when
-        classService.saveUsersToClass(List.of("test1"),"4B");
-        classService.removeUserFromClass(List.of("test1"));
+        schoolClassService.saveUsersToClass(Set.of("test1"),"4B");
+        schoolClassService.removeUserFromClass(List.of("test1"));
 
         User user = userRepository.getUserByUsername("test1").orElseThrow();
         //then
@@ -63,8 +64,8 @@ public class ClassServiceTest {
         //given
         insertUsers();
         //when
-        classService.saveUsersToClass(List.of("test1"),"4B");
-        classService.removeUserFromClass(List.of("test1"));
+        schoolClassService.saveUsersToClass(Set.of("test1"),"4B");
+        schoolClassService.removeUserFromClass(List.of("test1"));
 
         User user = userRepository.getUserByUsername("test1").orElseThrow();
         SchoolClass schoolClass = schoolClassRepository.getSchoolClassByName("4B").orElseThrow();
@@ -82,7 +83,7 @@ public class ClassServiceTest {
         insertUsers();
         //when
         Exception exception = assertThrows(SchoolClassNotFoundException.class,
-                () -> classService.saveUsersToClass(List.of("test1"), "NotExistingClass"));
+                () -> schoolClassService.saveUsersToClass(Set.of("test1"), "NotExistingClass"));
         //then
         assertEquals("Class not found",exception.getMessage());
     }
@@ -92,7 +93,7 @@ public class ClassServiceTest {
         insertUsers();
         //when
         Exception exception = assertThrows(UsernameNotFoundException.class,
-                () -> classService.saveUsersToClass(List.of("notExistingUser"), "4B"));
+                () -> schoolClassService.saveUsersToClass(Set.of("notExistingUser"), "4B"));
         //then
         assertEquals("The user with the provided username does not exist",exception.getMessage());
     }
