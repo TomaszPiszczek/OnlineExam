@@ -5,6 +5,7 @@ import com.example.OnlineExam.repository.user.UserRepository;
 import com.example.OnlineExam.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class RegisterController {
         userRepository.save(user);
         userService.addUserRole(user.getUsername(),"STUDENT");
 
-        return ResponseEntity.ok("User saved");
+        return ResponseEntity.status(HttpStatus.CREATED).body("User saved");
     }
     @Transactional
     @PostMapping("/registerTeacher")
@@ -41,6 +42,6 @@ public class RegisterController {
         userRepository.save(user);
         userService.addUserRole(user.getUsername(),"TEACHER");
 
-        return ResponseEntity.ok("User saved");
+        return ResponseEntity.status(HttpStatus.CREATED).body("User saved");
     }
 }
