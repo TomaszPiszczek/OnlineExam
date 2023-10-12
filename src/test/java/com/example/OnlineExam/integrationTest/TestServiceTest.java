@@ -5,14 +5,15 @@ import com.example.OnlineExam.exception.*;
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.test.Answer;
 import com.example.OnlineExam.model.test.Question;
+import com.example.OnlineExam.model.user.SchoolClass;
 import com.example.OnlineExam.model.user.User;
-import com.example.OnlineExam.repository.subject.SubjectRepository;
 import com.example.OnlineExam.repository.test.AnswerRepository;
 import com.example.OnlineExam.repository.test.QuestionRepository;
 import com.example.OnlineExam.repository.test.TestRepository;
 import com.example.OnlineExam.repository.user.UserRepository;
+import com.example.OnlineExam.service.SchoolClassService;
 import com.example.OnlineExam.service.SubjectService;
-import com.example.OnlineExam.service.TestService;
+import com.example.OnlineExam.service.test.TestService;
 import jakarta.transaction.Transactional;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +29,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -56,6 +58,9 @@ public class TestServiceTest {
     private QuestionRepository questionRepository;
     @Autowired
     private AnswerRepository answerRepository;
+    @Autowired
+    private SchoolClassService schoolClassService;
+
 
     private Question question;
     private Answer answer;
@@ -66,16 +71,19 @@ public class TestServiceTest {
     public void setUp(){
         this.answer = new Answer();
         this.answer.setAnswer("answer");
+        answerRepository.save(answer);
 
         this.question = new Question();
         this.question.setQuestion("question");
         this.question.setAnswers(new HashSet<>(Collections.singletonList(answer)));
+        questionRepository.save(question);
 
         this.subject = new Subject();
         this.subject.setSubjectName("math");
         subjectService.createSubject(subject);
-        questionRepository.save(question);
-        answerRepository.save(answer);
+
+
+
     }
 
 
@@ -222,6 +230,19 @@ public class TestServiceTest {
         assertEquals(2,test.getUsers().size());
     }
     @Test
+    public void addTestToClassShouldAddEveryStudentFromClassToTest() throws NoSuchFieldException, IllegalAccessException {
+        //given
+        insertUsers();
+        createTest();
+        addUsersToClass();
+        com.example.OnlineExam.model.test.Test test = testRepository.getTestByTestName("testName").orElseThrow(TestNotFoundException::new);
+        //when
+        assertEquals(0,test.getUsers().size());
+        testService.addTestToClass("4B",test.getId());
+        //then
+        assertEquals(2,test.getUsers().size());
+    }
+    @Test
     public void removeUsersFromTest(){
         //given
         insertUsers();
@@ -252,6 +273,20 @@ public class TestServiceTest {
         testRepository.save(test);
         testId = test.getId();
     }
+
+    private void addUsersToClass() throws NoSuchFieldException, IllegalAccessException {
+        SchoolClass schoolClass = new SchoolClass();
+        schoolClass.setName("4B");
+        Field usersField = SchoolClass.class.getDeclaredField("users");
+        usersField.setAccessible(true);
+        Set<User> newUsers = new HashSet<>();
+        newUsers.add(userRepository.getUserByUsername("student").orElseThrow());
+        newUsers.add(userRepository.getUserByUsername("student1").orElseThrow());
+        Set<User> currentUsers = new HashSet<>(newUsers);
+        usersField.set(schoolClass, currentUsers);
+        schoolClassService.createClass(schoolClass);
+    }
+
 
 
 
