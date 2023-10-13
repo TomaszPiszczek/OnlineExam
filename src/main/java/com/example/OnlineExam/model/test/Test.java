@@ -3,14 +3,11 @@ package com.example.OnlineExam.model.test;
 import com.example.OnlineExam.model.subject.Grade;
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +31,8 @@ public class Test {
     private String testName;
     @Column(name = "date")
     private LocalDateTime dateTime = LocalDateTime.now();
+    @Column(name = "test_expire_date")
+    private LocalDateTime expireDate;
     @OneToMany(mappedBy = "test")
     private Set<Question> questions;
     @OneToMany(mappedBy = "test")
@@ -85,6 +84,10 @@ public class Test {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public LocalDateTime getExpireDate() {
+        return expireDate;
     }
 
     public Set<User> getUsers() {

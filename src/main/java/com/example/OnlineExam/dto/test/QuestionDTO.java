@@ -1,4 +1,6 @@
-package com.example.OnlineExam.dto;
+package com.example.OnlineExam.dto.test;
+
+import com.example.OnlineExam.dto.test.AnswerDTO;
 
 import java.util.List;
 

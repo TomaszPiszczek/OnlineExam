@@ -82,6 +82,9 @@ public class User {
         this.tests = new HashSet<>();
     }
 
+    public int getUserId() {
+        return userId;
+    }
 
     public Set<Subject> getSubjects() {
         if(subjects==null){

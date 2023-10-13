@@ -1,4 +1,4 @@
-package com.example.OnlineExam.dto;
+package com.example.OnlineExam.dto.test;
 
 public record AnswerDTO(
         String answer,

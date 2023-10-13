@@ -1,8 +1,8 @@
-package com.example.OnlineExam.dto.mapper;
+package com.example.OnlineExam.dto.test.mapper;
 
-import com.example.OnlineExam.dto.AnswerDTO;
-import com.example.OnlineExam.dto.QuestionDTO;
-import com.example.OnlineExam.dto.TestDTO;
+import com.example.OnlineExam.dto.test.AnswerDTO;
+import com.example.OnlineExam.dto.test.QuestionDTO;
+import com.example.OnlineExam.dto.test.TestDTO;
 import com.example.OnlineExam.model.test.Answer;
 import com.example.OnlineExam.model.test.Question;
 import com.example.OnlineExam.model.test.Test;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Component
 public class TestMapper {
 
-    public TestDTO mapToTestDTO(Test test) {
+    public TestDTO mapToTestDTO(Test test,Integer score) {
         List<QuestionDTO> questionDTOs = test.getQuestions()
                 .stream()
                 .map(this::mapToQuestionDTO)
@@ -25,6 +25,8 @@ public class TestMapper {
                 test.getTestCreator(),
                 test.getDateTime(),
                 test.getSubject().getSubjectName(),
+                test.getExpireDate(),
+                score,
                 questionDTOs
 
         );
