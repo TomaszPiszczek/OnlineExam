@@ -27,13 +27,13 @@ public class UserServiceTest {
     @ClassRule
     public static PostgreSQLContainer postgreSQLContainer = PostgresqlContainer.getInstance();
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
-    SchoolClassRepository schoolClassRepository;
+    private SchoolClassRepository schoolClassRepository;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    AuthorityRepository authorityRepository;
+    private AuthorityRepository authorityRepository;
 
 
 

@@ -16,9 +16,9 @@ import java.util.Set;
 
 @Service
 public class SubjectService {
-    UserRepository userRepository;
-    SubjectRepository subjectRepository;
-    EntityManager entityManager;
+    private final UserRepository userRepository;
+    private final SubjectRepository subjectRepository;
+    private final EntityManager entityManager;
 
     public SubjectService(UserRepository userRepository, SubjectRepository subjectRepository, EntityManager entityManager) {
         this.userRepository = userRepository;

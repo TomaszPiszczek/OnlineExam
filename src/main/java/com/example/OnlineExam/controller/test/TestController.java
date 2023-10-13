@@ -1,6 +1,7 @@
 package com.example.OnlineExam.controller.test;
 
-import com.example.OnlineExam.dto.TestDTO;
+import com.example.OnlineExam.dto.studentTest.StudentTestDTO;
+import com.example.OnlineExam.dto.test.TestDTO;
 import com.example.OnlineExam.model.test.Question;
 import com.example.OnlineExam.model.test.Test;
 import com.example.OnlineExam.repository.user.UserRepository;
@@ -39,10 +40,15 @@ public class TestController {
     }
     @GetMapping("/getTests")
     public ResponseEntity<List<TestDTO>> getTests(@RequestParam String userName){
-        List<TestDTO> tests = testService.getTests(userName);
-
-        return ResponseEntity.ok(tests);
+        return ResponseEntity.ok(testService.getTests(userName));
     }
+    //todo TestInPostman
+    @GetMapping("/getTestScoreForClass")
+    public ResponseEntity<Set<StudentTestDTO>> getTestsForClass(@RequestParam String className,@RequestParam int testId){
+        return ResponseEntity.ok(testService.getTestsForClass(className,testId));
+    }
+
+
     @PostMapping("/addUserToTest")
     public ResponseEntity<String> addUserToTest(@RequestParam Integer testId,@RequestBody Set<String> users){
         testService.addUsersToTest(users,testId);

@@ -30,11 +30,11 @@ public class SubjectServiceTest {
     @ClassRule
     public static PostgreSQLContainer postgreSQLContainer = PostgresqlContainer.getInstance();
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    SubjectService subjectService;
+    private SubjectService subjectService;
     @Autowired
-    SubjectRepository subjectRepository;
+    private SubjectRepository subjectRepository;
     @Test
     public void addUserToSubject(){
         //given

@@ -4,25 +4,21 @@ import com.example.OnlineExam.exception.UsernameNotFoundException;
 import com.example.OnlineExam.model.user.Authority;
 import com.example.OnlineExam.model.user.User;
 import com.example.OnlineExam.repository.user.AuthorityRepository;
-import com.example.OnlineExam.repository.user.SchoolClassRepository;
 import com.example.OnlineExam.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Set;
 
 @Slf4j
 @Service
 public class UserService {
-    UserRepository userRepository;
-    SchoolClassRepository schoolClassRepository;
-    AuthorityRepository authorityRepository;
+    private final UserRepository userRepository;
+    private final AuthorityRepository authorityRepository;
 
-    public UserService(UserRepository userRepository, SchoolClassRepository schoolClassRepository, AuthorityRepository authorityRepository) {
+    public UserService(UserRepository userRepository,AuthorityRepository authorityRepository) {
         this.userRepository = userRepository;
-        this.schoolClassRepository = schoolClassRepository;
         this.authorityRepository = authorityRepository;
     }
 

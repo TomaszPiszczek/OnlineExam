@@ -45,9 +45,9 @@ public class TestServiceTest {
     @ClassRule
     public static PostgreSQLContainer postgreSQLContainer = PostgresqlContainer.getInstance();
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    SubjectService subjectService;
+    private SubjectService subjectService;
     @Autowired
     private MockMvc mockMvc;
     @Autowired

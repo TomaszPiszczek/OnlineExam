@@ -30,11 +30,11 @@ public class ClassServiceTest {
     public static PostgreSQLContainer postgreSQLContainer = PostgresqlContainer.getInstance();
 
     @Autowired
-    SchoolClassService schoolClassService;
+    private SchoolClassService schoolClassService;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    SchoolClassRepository schoolClassRepository;
+    private SchoolClassRepository schoolClassRepository;
 
     @Test
     public void saveUserToClass(){
