@@ -1,5 +1,6 @@
 package com.example.OnlineExam.controller.user;
 
+import com.example.OnlineExam.dto.user.UserDTO;
 import com.example.OnlineExam.model.user.SchoolClass;
 import com.example.OnlineExam.service.SchoolClassService;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,12 @@ public class SchoolClassController {
         schoolClassService.createClass(schoolClass);
         return ResponseEntity.status(HttpStatus.CREATED).body("Class created");
     }
+    @GetMapping("/getUsers")
+    public ResponseEntity<Set<UserDTO>> getUsers(@RequestParam String className){
+      Set<UserDTO> users =  schoolClassService.getUsersFromClass(className);
+      return ResponseEntity.ok(users);
+    }
+
 
 
 
