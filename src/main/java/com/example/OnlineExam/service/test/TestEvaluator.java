@@ -13,11 +13,12 @@ import com.example.OnlineExam.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 @Slf4j
-@Component
+@Service
 public class TestEvaluator {
 
     private final TestRepository testRepository;
@@ -35,7 +36,8 @@ public class TestEvaluator {
     /**
      *
      * @return
-     * Return the percentage value of correct test answers.
+     * Return the percentage value of correct test answers,
+     * and save it.
      */
     @Transactional
     public int RateTest(List<Question> questions, String userName, Integer testId){
@@ -49,14 +51,10 @@ public class TestEvaluator {
                 .mapToDouble(Question::getPoints)
                 .sum();
 
-        log.warn("score" + score);
-
         int result = (int) Math.round((score / maxScore) * 100);
         saveTestResult(result,userName,testId);
         return result;
     }
-
-
     private void saveTestResult(Integer result,String userName,Integer testId){
         StudentTest studentTest = new StudentTest();
         Test test = testRepository.getTestById(testId).orElseThrow(TestNotFoundException::new);

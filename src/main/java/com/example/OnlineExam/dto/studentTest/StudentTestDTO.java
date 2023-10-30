@@ -1,6 +1,32 @@
 package com.example.OnlineExam.dto.studentTest;
 
-import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotNull;
 
-public record StudentTestDTO(@Column(name = "username")String userName,@Column(name = "testname") String testName, @Column(name = "test_result") Integer score) {
+public class StudentTestDTO {
+    @NotNull(message = "Username cannot be blank")
+    private String userName;
+
+    @NotNull(message = "Test name cannot be null")
+    private String testName;
+
+    private Integer score;
+
+    public StudentTestDTO(String userName, String testName, Integer score) {
+        this.userName = userName;
+        this.testName = testName;
+        this.score = score;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getTestName() {
+        return testName;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+    // Getters and setters
 }
