@@ -44,7 +44,7 @@ public class TestController {
     }
     //todo TestInPostman
     @GetMapping("/getTestScoreForClass")
-    public ResponseEntity<Set<StudentTestDTO>> getTestsForClass(@RequestParam String className,@RequestParam int testId){
+    public ResponseEntity<List<StudentTestDTO>> getTestsForClass(@RequestParam String className,@RequestParam int testId){
         return ResponseEntity.ok(testService.getTestsForClass(className,testId));
     }
 

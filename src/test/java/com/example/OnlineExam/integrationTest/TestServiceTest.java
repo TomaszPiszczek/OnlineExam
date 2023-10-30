@@ -37,6 +37,8 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+
 @Transactional
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
@@ -75,6 +77,7 @@ public class TestServiceTest {
 
         this.question = new Question();
         this.question.setQuestion("question");
+        this.question.setPoints(2);
         this.question.setAnswers(new HashSet<>(Collections.singletonList(answer)));
         questionRepository.save(question);
 
@@ -142,7 +145,7 @@ public class TestServiceTest {
         Subject subject = new Subject();
         subject.setSubjectName("math");
 
-        String json = "{\"testName\":\"Test Math1\",\"testCreator\":\"test\",\"subject\":{\"id\":" + (subject.getId()+100) + "},\"questions\":[{\"question\":\"2 + 2?\",\"answers\":[{\"answer\":\"3\",\"correct\":false},{\"answer\":\"4\",\"correct\":true},{\"answer\":\"5\",\"correct\":false},{\"answer\":\"6\",\"correct\":false}]},{\"question\":\"3 - 2?\",\"answers\":[{\"answer\":\"0\",\"correct\":false},{\"answer\":\"1\",\"correct\":true},{\"answer\":\"2\",\"correct\":false},{\"answer\":\"3\",\"correct\":false}]}]}";
+        String json = "{\"testName\":\"Test Math1\",\"testCreator\":\"test\",\"subject\":{\"id\":" + (subject.getId()+100) + "},\"questions\":[{\"question\":\"2 + 2?\",\"answers\":[{\"answer\":\"3\",\"correct\":false},{\"answer\":\"4\",\"correct\":true},{\"answer\":\"5\",\"correct\":false},{\"answer\":\"6\",\"correct\":false}],\"points\": 3},{\"question\":\"3 - 2?\",\"answers\":[{\"answer\":\"0\",\"correct\":false},{\"answer\":\"1\",\"correct\":true},{\"answer\":\"2\",\"correct\":false},{\"answer\":\"3\",\"correct\":false}],\"points\": 3}]}";
         //then
         mockMvc.perform(MockMvcRequestBuilders.post("/createTest")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -156,7 +159,7 @@ public class TestServiceTest {
 
 
 
-        String json = "{\"testName\":\"Test Math1\",\"testCreator\":\"test\",\"subject\":{\"id\":" + subject.getId() + "},\"questions\":[{\"question\":\"2 + 2?\",\"answers\":[{\"answer\":\"3\",\"correct\":false},{\"answer\":\"4\",\"correct\":true},{\"answer\":\"5\",\"correct\":false},{\"answer\":\"6\",\"correct\":false}]},{\"question\":\"3 - 2?\",\"answers\":[{\"answer\":\"0\",\"correct\":false},{\"answer\":\"1\",\"correct\":true},{\"answer\":\"2\",\"correct\":false},{\"answer\":\"3\",\"correct\":false}]}]}";
+        String json = "{\"testName\":\"Test Math1\",\"testCreator\":\"test\",\"subject\":{\"id\":" + subject.getId() + "},\"questions\":[{\"question\":\"2 + 2?\",\"answers\":[{\"answer\":\"3\",\"correct\":false},{\"answer\":\"4\",\"correct\":true},{\"answer\":\"5\",\"correct\":false},{\"answer\":\"6\",\"correct\":false}],\"points\": 3},{\"question\":\"3 - 2?\",\"answers\":[{\"answer\":\"0\",\"correct\":false},{\"answer\":\"1\",\"correct\":true},{\"answer\":\"2\",\"correct\":false},{\"answer\":\"3\",\"correct\":false}],\"points\": 3}]}";
        //then
         mockMvc.perform(MockMvcRequestBuilders.post("/createTest")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -286,8 +289,6 @@ public class TestServiceTest {
         usersField.set(schoolClass, currentUsers);
         schoolClassService.createClass(schoolClass);
     }
-
-
 
 
 

@@ -1,21 +1,24 @@
 package com.example.OnlineExam.service.test;
 
-import com.example.OnlineExam.dto.TestDTO;
-import com.example.OnlineExam.dto.mapper.TestMapper;
+import com.example.OnlineExam.dto.studentTest.StudentTestDTO;
+import com.example.OnlineExam.dto.test.TestDTO;
+import com.example.OnlineExam.dto.test.mapper.TestMapper;
 import com.example.OnlineExam.exception.*;
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.test.Test;
 import com.example.OnlineExam.model.user.SchoolClass;
 import com.example.OnlineExam.model.user.User;
 import com.example.OnlineExam.repository.subject.SubjectRepository;
-import com.example.OnlineExam.repository.test.AnswerRepository;
-import com.example.OnlineExam.repository.test.QuestionRepository;
-import com.example.OnlineExam.repository.test.TestRepository;
+import com.example.OnlineExam.repository.test.*;
 import com.example.OnlineExam.repository.user.SchoolClassRepository;
 import com.example.OnlineExam.repository.user.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,14 +29,19 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class TestService {
-    TestRepository testRepository;
-    UserRepository userRepository;
-    SubjectRepository subjectRepository;
-    QuestionRepository questionRepository;
-    AnswerRepository answerRepository;
-    TestMapper testMapper;
-    SchoolClassRepository schoolClassRepository;
-    public TestService(TestRepository testRepository, UserRepository userRepository, SubjectRepository subjectRepository, QuestionRepository questionRepository, AnswerRepository answerRepository, TestMapper testMapper, SchoolClassRepository schoolClassRepository) {
+    @PersistenceContext
+    private EntityManager entityManager;
+   private final   TestRepository testRepository;
+   private final   UserRepository userRepository;
+   private final   SubjectRepository subjectRepository;
+   private final QuestionRepository questionRepository;
+   private final AnswerRepository answerRepository;
+   private final TestMapper testMapper;
+   private final SchoolClassRepository schoolClassRepository;
+
+    private final StudentTestRepository studentTestRepository;
+
+    public TestService(TestRepository testRepository, UserRepository userRepository, SubjectRepository subjectRepository, QuestionRepository questionRepository, AnswerRepository answerRepository, TestMapper testMapper, SchoolClassRepository schoolClassRepository, StudentTestRepository studentTestRepository) {
         this.testRepository = testRepository;
         this.userRepository = userRepository;
         this.subjectRepository = subjectRepository;
@@ -41,6 +49,7 @@ public class TestService {
         this.answerRepository = answerRepository;
         this.testMapper = testMapper;
         this.schoolClassRepository = schoolClassRepository;
+        this.studentTestRepository = studentTestRepository;
     }
 
     @Transactional
@@ -89,13 +98,33 @@ public class TestService {
         if(user.getRoles().stream().anyMatch(role -> role.getAuthority().contains("ROLE_TEACHER"))){
 
             test =  testRepository.getTestsByTestCreator(userName).orElseThrow(TestNotFoundException::new);
-            test.forEach(test1 -> tests.add(testMapper.mapToTestDTO(test1)));
+            test.forEach(test1 -> tests.add(testMapper.mapToTestDTO(test1,null)));
             return tests;
         }
 
         test=testRepository.getTestsByUserName(userName).orElseThrow(TestNotFoundException::new);
-        test.forEach(test1 -> tests.add(testMapper.mapToTestDTO(test1)));
+        test.forEach(test1 -> {
+            Integer score = studentTestRepository.findTestScoreByTestIdAndUserId(test1.getId(),user.getUserId());
+            tests.add(testMapper.mapToTestDTO(test1,score));
+        });
         return tests;
+    }
+    //todo tests
+    public List<StudentTestDTO> getTestsForClass(String className,int testId) {
+        if(!schoolClassRepository.existsByName(className)) throw new SchoolClassNotFoundException();
+        if(testRepository.getTestById(testId).isEmpty()) throw new TestNotFoundException();
+        String jpql = "SELECT NEW com.example.OnlineExam.dto.studentTest.StudentTestDTO(u.username, t.testName, st.testResult) " +
+                "FROM StudentTest st " +
+                "JOIN st.user u " +
+                "JOIN st.test t " +
+                "WHERE t.id = :testId " +
+                "AND u.schoolClass.name = :className";
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("testId", testId);
+        query.setParameter("className", className);
+
+        return query.getResultList();
     }
     @Transactional
     public void addTestToClass(String className,Integer testId){
@@ -128,6 +157,7 @@ public class TestService {
         List<Test> tests = testRepository.getTestsByTestCreator(test.getTestCreator()).orElse(Collections.emptyList());
         if(tests.stream().anyMatch(test1 -> test1.getTestName().equals(test.getTestName()))) throw new DuplicateTestException();
     }
+
 
 
 }
