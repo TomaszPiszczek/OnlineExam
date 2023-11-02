@@ -10,11 +10,13 @@ public class StudentTestDTO {
     private String testName;
 
     private Integer score;
+    private boolean finished;
 
     public StudentTestDTO(String userName, String testName, Integer score) {
         this.userName = userName;
         this.testName = testName;
         this.score = score;
+        this.finished =false;
     }
 
     public String getUserName() {
@@ -28,5 +30,12 @@ public class StudentTestDTO {
     public Integer getScore() {
         return score;
     }
-    // Getters and setters
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
 }

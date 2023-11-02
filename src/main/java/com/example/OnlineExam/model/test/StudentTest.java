@@ -23,6 +23,8 @@ public class StudentTest {
 
     @Column(name = "test_result")
     private Integer testResult;
+    @Column(name = "finished")
+    private Boolean finished;
 
 
 
@@ -48,6 +50,14 @@ public class StudentTest {
 
     public Integer getTestResult() {
         return testResult;
+    }
+
+    public Boolean getFinished() {
+        return finished;
+    }
+
+    public void setFinished(Boolean finished) {
+        this.finished = finished;
     }
 
     public void setTestResult(Integer testResult) {

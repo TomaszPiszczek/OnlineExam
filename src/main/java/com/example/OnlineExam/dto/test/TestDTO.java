@@ -13,7 +13,8 @@ public record TestDTO(
         String subject,
         LocalDateTime expireDate,
         Integer score,
-        List<QuestionDTO> questions
+        List<QuestionDTO> questions,
+        Boolean finished
 ) {
 
 }

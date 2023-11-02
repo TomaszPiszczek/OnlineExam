@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Component
 public class TestMapper {
 
-    public TestDTO mapToTestDTO(Test test,Integer score) {
+    public TestDTO mapToTestDTO(Test test,Integer score,Boolean finished) {
         List<QuestionDTO> questionDTOs = test.getQuestions()
                 .stream()
                 .map(this::mapToQuestionDTO)
@@ -27,7 +27,8 @@ public class TestMapper {
                 test.getSubject().getSubjectName(),
                 test.getExpireDate(),
                 score,
-                questionDTOs
+                questionDTOs,
+                finished
 
         );
     }
