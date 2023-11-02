@@ -12,7 +12,6 @@ import com.example.OnlineExam.repository.test.TestRepository;
 import com.example.OnlineExam.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,7 +31,6 @@ public class TestEvaluator {
     }
 
 
-    //todo test this method
     /**
      *
      * @return
@@ -55,6 +53,7 @@ public class TestEvaluator {
         saveTestResult(result,userName,testId);
         return result;
     }
+    //fixme update instead of saving new
     private void saveTestResult(Integer result,String userName,Integer testId){
         StudentTest studentTest = new StudentTest();
         Test test = testRepository.getTestById(testId).orElseThrow(TestNotFoundException::new);
@@ -62,6 +61,7 @@ public class TestEvaluator {
         studentTest.setTest(test);
         studentTest.setUser(user);
         studentTest.setTestResult(result);
+        studentTest.setFinished(true);
         if( test.getExpireDate() == null) {
             studentTestRepository.save(studentTest);
             return;

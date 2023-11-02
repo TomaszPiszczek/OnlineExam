@@ -91,25 +91,32 @@ public class TestService {
         Test test = testRepository.getTestById(testId).orElseThrow(TestNotFoundException::new);
         test.setTestName(name);
     }
-    public List<TestDTO> getTests(String userName){
+    public List<TestDTO> getTestsByStudentName(String userName){
         User user = userRepository.getUserByUsername(userName).orElseThrow(UsernameNotFoundException::new);
         List<TestDTO> tests = new ArrayList<>();
         List<Test> test;
-        if(user.getRoles().stream().anyMatch(role -> role.getAuthority().contains("ROLE_TEACHER"))){
 
-            test =  testRepository.getTestsByTestCreator(userName).orElseThrow(TestNotFoundException::new);
-            test.forEach(test1 -> tests.add(testMapper.mapToTestDTO(test1,null)));
-            return tests;
-        }
 
-        test=testRepository.getTestsByUserName(userName).orElseThrow(TestNotFoundException::new);
+        test=testRepository.getTestsByUserName(userName);
         test.forEach(test1 -> {
-            Integer score = studentTestRepository.findTestScoreByTestIdAndUserId(test1.getId(),user.getUserId());
-            tests.add(testMapper.mapToTestDTO(test1,score));
+            //Integer score = studentTestRepository.findTestScoreByTestIdAndUserId(test1.getId(),user.getUserId());
+            //Boolean finished = studentTestRepository.isFinishedTestByTestIdAndUserId(test1.getId(),user.getUserId());
+            tests.add(testMapper.mapToTestDTO(test1,0,false));
         });
         return tests;
     }
-    //todo tests
+    public List<TestDTO> getTestsByTestCreator(String testCreator){
+        userRepository.getUserByUsername(testCreator).orElseThrow(UsernameNotFoundException::new);
+        List<TestDTO> tests = new ArrayList<>();
+        List<Test> test;
+
+        test =  testRepository.getTestsByTestCreator(testCreator).orElseThrow(TestNotFoundException::new);
+        test.forEach(test1 -> tests.add(testMapper.mapToTestDTO(test1,null,null)));
+        return tests;
+    }
+    public List<TestDTO> getNotFinishedTest(String userName){
+        return getTestsByStudentName(userName).stream().filter(testDTO -> !testDTO.finished()).collect(Collectors.toList());
+    }
     public List<StudentTestDTO> getTestsForClass(String className,int testId) {
         if(!schoolClassRepository.existsByName(className)) throw new SchoolClassNotFoundException();
         if(testRepository.getTestById(testId).isEmpty()) throw new TestNotFoundException();

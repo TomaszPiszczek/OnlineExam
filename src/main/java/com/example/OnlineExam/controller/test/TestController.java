@@ -38,11 +38,20 @@ public class TestController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Test added");
     }
-    @GetMapping("/getTests")
-    public ResponseEntity<List<TestDTO>> getTests(@RequestParam String userName){
-        return ResponseEntity.ok(testService.getTests(userName));
+    @GetMapping("/getTestsByStudentName")
+    public ResponseEntity<List<TestDTO>> getTestsByStudentName(@RequestParam String userName){
+        return ResponseEntity.ok(testService.getTestsByStudentName(userName));
     }
-    //todo TestInPostman
+    @GetMapping("/getTestsByTestCreator")
+    public ResponseEntity<List<TestDTO>> getTestsByTestCreator(@RequestParam String testCreator){
+        return ResponseEntity.ok(testService.getTestsByTestCreator(testCreator));
+    }
+    @GetMapping("/getUnfinishedTestForStudent")
+    public ResponseEntity<List<TestDTO>> getUnfinishedTest(@RequestParam String userName){
+        return ResponseEntity.ok(testService.getNotFinishedTest(userName));
+    }
+
+
     @GetMapping("/getTestScoreForClass")
     public ResponseEntity<List<StudentTestDTO>> getTestsForClass(@RequestParam String className,@RequestParam int testId){
         return ResponseEntity.ok(testService.getTestsForClass(className,testId));

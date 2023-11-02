@@ -51,7 +51,6 @@ public class SchoolClassService {
         }
         schoolClassRepository.save(schoolClass);
     }
-    //todo test this method
     public Set<UserDTO> getUsersFromClass(String className) {
         Set<User> users = userRepository.getUsersByClassName(className).orElseThrow(SchoolClassNotFoundException::new);
         log.warn(users.size() + "Users size");

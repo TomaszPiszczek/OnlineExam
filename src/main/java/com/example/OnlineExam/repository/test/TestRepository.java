@@ -16,9 +16,9 @@ public interface TestRepository extends JpaRepository<Test,Integer> {
             SELECT t.*
             FROM public.test t
             INNER JOIN public.student_test st ON t.test_id = st.test_id
-            INNER JOIN public."user" u ON st.user_id = u.user_id
+            INNER JOIN public.user u ON st.user_id = u.user_id
             WHERE u.username = :userName""",nativeQuery = true)
-    Optional<List<Test>> getTestsByUserName(String userName);
+    List<Test> getTestsByUserName(String userName);
 
     Optional<Test> getTestByTestName(String testName);
 

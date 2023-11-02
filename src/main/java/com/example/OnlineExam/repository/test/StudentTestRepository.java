@@ -11,5 +11,10 @@ public interface StudentTestRepository extends JpaRepository<StudentTest,Integer
     @Query("SELECT st.testResult FROM StudentTest st WHERE st.test.id = :testId AND st.user.userId = :userId")
     Integer findTestScoreByTestIdAndUserId(@Param("testId") int testId, @Param("userId") int userId);
 
+    @Query("SELECT st.finished FROM StudentTest st WHERE st.test.id = :testId AND st.user.userId = :userId")
+    Boolean isFinishedTestByTestIdAndUserId(@Param("testId") int testId, @Param("userId") int userId);
+
+
+
 
 }
