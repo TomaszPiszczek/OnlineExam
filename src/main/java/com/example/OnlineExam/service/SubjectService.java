@@ -45,7 +45,7 @@ public class SubjectService {
         subjectRepository.save(subject);
     }
     @Transactional
-    public void addUsersToSubject(List<String> userNames, String subjectName){
+    public void addUsersToSubject(Set<String> userNames, String subjectName){
         Subject subject = subjectRepository.getSubjectBySubjectName(subjectName).orElse(new Subject());
         subject.setSubjectName(subjectName);
         for (String name:userNames

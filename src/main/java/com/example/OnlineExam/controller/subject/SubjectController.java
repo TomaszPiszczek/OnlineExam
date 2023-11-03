@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * This controller is only for Teacher
@@ -32,7 +33,7 @@ public class SubjectController {
     }
 
     @PostMapping("/addUsersToSubject")
-    public ResponseEntity<String> addUsersToSubject(@RequestBody List<String> userNames,@RequestParam String subjectName){
+    public ResponseEntity<String> addUsersToSubject(@RequestBody Set<String> userNames, @RequestParam String subjectName){
         subjectService.addUsersToSubject(userNames,subjectName);
         return ResponseEntity.status(HttpStatus.CREATED).body("Users added to subject");
     }

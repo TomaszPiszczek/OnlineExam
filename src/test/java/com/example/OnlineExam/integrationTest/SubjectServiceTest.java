@@ -19,6 +19,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -115,7 +117,7 @@ public class SubjectServiceTest {
     public void addMultipleUsersToSubject(){
         //given
         insertUsers();
-        ArrayList<String> users = new ArrayList<>();
+        Set<String> users = new HashSet<>();
         users.add("test1");
         users.add("test2");
         users.add("test3");
