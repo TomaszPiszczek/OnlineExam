@@ -2,7 +2,8 @@ package com.example.OnlineExam.model.test;
 
 import com.example.OnlineExam.model.user.User;
 import jakarta.persistence.*;
-
+import lombok.Builder;
+import org.hibernate.annotations.ColumnDefault;
 
 
 @Entity
@@ -24,9 +25,8 @@ public class StudentTest {
     @Column(name = "test_result")
     private Integer testResult;
     @Column(name = "finished")
+    @ColumnDefault("false")
     private Boolean finished;
-
-
 
     public int getId() {
         return id;
@@ -52,7 +52,7 @@ public class StudentTest {
         return testResult;
     }
 
-    public Boolean getFinished() {
+    public Boolean isFinished() {
         return finished;
     }
 

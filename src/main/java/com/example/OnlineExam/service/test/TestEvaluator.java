@@ -55,21 +55,25 @@ public class TestEvaluator {
     }
     //fixme update instead of saving new
     private void saveTestResult(Integer result,String userName,Integer testId){
-        StudentTest studentTest = new StudentTest();
-        Test test = testRepository.getTestById(testId).orElseThrow(TestNotFoundException::new);
         User user = userRepository.getUserByUsername(userName).orElseThrow(UsernameNotFoundException::new);
-        studentTest.setTest(test);
-        studentTest.setUser(user);
+        Test test = testRepository.getTestById(testId).orElseThrow(TestNotFoundException::new);
+
+        StudentTest studentTest = studentTestRepository.findStudentTestByTestAndUser(user.getUserId(), test.getId());
+
+        if (studentTest == null) {
+            studentTest = new StudentTest();
+            studentTest.setUser(user);
+            studentTest.setTest(test);
+        }
+
         studentTest.setTestResult(result);
         studentTest.setFinished(true);
-        if( test.getExpireDate() == null) {
-            studentTestRepository.save(studentTest);
-            return;
-        }
-        if(test.getExpireDate().isAfter(LocalDateTime.now())){
-            studentTestRepository.save(studentTest);
-        }else throw new IllegalStateException("Test expired");
 
+        if (test.getExpireDate() == null || test.getExpireDate().isAfter(LocalDateTime.now())) {
+            studentTestRepository.save(studentTest);
+        } else {
+            throw new IllegalStateException("Test expired");
+        }
     }
 
 

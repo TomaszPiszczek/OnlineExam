@@ -99,9 +99,9 @@ public class TestService {
 
         test=testRepository.getTestsByUserName(userName);
         test.forEach(test1 -> {
-            //Integer score = studentTestRepository.findTestScoreByTestIdAndUserId(test1.getId(),user.getUserId());
-            //Boolean finished = studentTestRepository.isFinishedTestByTestIdAndUserId(test1.getId(),user.getUserId());
-            tests.add(testMapper.mapToTestDTO(test1,0,false));
+            Integer score = studentTestRepository.findTestScoreByTestIdAndUserId(test1.getId(),user.getUserId());
+            Boolean finished = studentTestRepository.isFinishedTestByTestIdAndUserId(test1.getId(),user.getUserId());
+            tests.add(testMapper.mapToTestDTO(test1,score,finished));
         });
         return tests;
     }
@@ -111,7 +111,7 @@ public class TestService {
         List<Test> test;
 
         test =  testRepository.getTestsByTestCreator(testCreator).orElseThrow(TestNotFoundException::new);
-        test.forEach(test1 -> tests.add(testMapper.mapToTestDTO(test1,null,null)));
+        test.forEach(test1 -> tests.add(testMapper.mapToTestDTO(test1,null,false)));
         return tests;
     }
     public List<TestDTO> getNotFinishedTest(String userName){
@@ -141,12 +141,12 @@ public class TestService {
                 .stream()
                 .map(User::getUsername)
                 .collect(Collectors.toSet());
-
         users.forEach(log::warn);
         addUsersToTest(users,testId);
     }
     private void addQuestionsAndAnswersToTest(Test test){
         test.getQuestions().forEach(
+
                 question -> {
                     question.setTest(test);
                     questionRepository.save(question);
