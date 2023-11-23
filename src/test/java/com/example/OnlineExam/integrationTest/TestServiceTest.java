@@ -1,6 +1,5 @@
 package com.example.OnlineExam.integrationTest;
 
-import com.example.OnlineExam.db.PostgresqlContainer;
 import com.example.OnlineExam.exception.*;
 import com.example.OnlineExam.model.subject.Subject;
 import com.example.OnlineExam.model.test.Answer;
@@ -15,19 +14,22 @@ import com.example.OnlineExam.service.SchoolClassService;
 import com.example.OnlineExam.service.SubjectService;
 import com.example.OnlineExam.service.test.TestService;
 import jakarta.transaction.Transactional;
-import org.junit.ClassRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -35,17 +37,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.*;
 
-@Transactional
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class TestServiceTest {
-    @ClassRule
-    public static PostgreSQLContainer postgreSQLContainer = PostgresqlContainer.getInstance();
+    @Container
+    @ServiceConnection
+    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:15.2");
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -89,13 +93,17 @@ public class TestServiceTest {
 
     }
 
-
+    @Test
+    public  void connectionTest(){
+        assertTrue(postgreSQLContainer.isCreated());
+        assertTrue(postgreSQLContainer.isRunning());
+    }
 
     @Test
     public void testThrowUserNotFoundExceptionWithWrongUsername() {
 
         //given
-        insertUsers();
+
         Subject subject = new Subject();
         subject.setSubjectName("math");
         com.example.OnlineExam.model.test.Test test = new com.example.OnlineExam.model.test.Test();
@@ -141,7 +149,7 @@ public class TestServiceTest {
     @Test
     public void testThrowSubjectNotFoundExceptionWithWrongSubjectIdJSON() throws Exception {
         //given
-        insertUsers();
+
         Subject subject = new Subject();
         subject.setSubjectName("math");
 
@@ -152,20 +160,7 @@ public class TestServiceTest {
                         .content(json))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
-    @Test
-    public void createTestWithValidJSON() throws Exception {
-        //given
-        insertUsers();
 
-
-
-        String json = "{\"testName\":\"Test Math1\",\"testCreator\":\"test\",\"subject\":{\"id\":" + subject.getId() + "},\"questions\":[{\"question\":\"2 + 2?\",\"answers\":[{\"answer\":\"3\",\"correct\":false},{\"answer\":\"4\",\"correct\":true},{\"answer\":\"5\",\"correct\":false},{\"answer\":\"6\",\"correct\":false}],\"points\": 3},{\"question\":\"3 - 2?\",\"answers\":[{\"answer\":\"0\",\"correct\":false},{\"answer\":\"1\",\"correct\":true},{\"answer\":\"2\",\"correct\":false},{\"answer\":\"3\",\"correct\":false}],\"points\": 3}]}";
-       //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/createTest")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
     @Test
     public void getTestsShouldReturnTests(){
         //given

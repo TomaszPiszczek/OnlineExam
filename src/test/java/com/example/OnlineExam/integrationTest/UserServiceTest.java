@@ -13,19 +13,26 @@ import org.junit.ClassRule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-@Transactional
 @ExtendWith(SpringExtension.class)
+@Testcontainers
 @SpringBootTest
+@Transactional
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UserServiceTest {
-    @ClassRule
-    public static PostgreSQLContainer postgreSQLContainer = PostgresqlContainer.getInstance();
+    @Container
+    @ServiceConnection
+    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:15.2");
     @Autowired
     private UserService userService;
     @Autowired
@@ -35,6 +42,11 @@ public class UserServiceTest {
     @Autowired
     private AuthorityRepository authorityRepository;
 
+    @Test
+    public  void connectionTest(){
+        assertTrue(postgreSQLContainer.isCreated());
+        assertTrue(postgreSQLContainer.isRunning());
+    }
 
 
     @Test

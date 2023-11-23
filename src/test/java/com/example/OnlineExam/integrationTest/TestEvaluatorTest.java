@@ -20,25 +20,32 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-@Transactional
+
 @AutoConfigureMockMvc
 @ExtendWith({MockitoExtension.class,SpringExtension.class})
-@SpringBootTest
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class TestEvaluatorTest {
+    @Container
+    @ServiceConnection
+    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:15.2");
 
-    @ClassRule
-    public static PostgreSQLContainer postgreSQLContainer = PostgresqlContainer.getInstance();
     @Mock
     private TestRepository testRepository;
 
@@ -51,11 +58,16 @@ public class TestEvaluatorTest {
     public void setUp(){
         testEvaluator = new TestEvaluator(testRepository,userRepository,studentTestRepository);
     }
-
+    @Test
+    public  void connectionTest(){
+        assertTrue(postgreSQLContainer.isCreated());
+        assertTrue(postgreSQLContainer.isRunning());
+    }
 
     @Test
     public void testRateShouldReturnPercentageValueOfCorrectAnswers()
     {
+        //given
         Optional<User> user = Optional.of(new User());
         Optional<com.example.OnlineExam.model.test.Test> test = Optional.of(new com.example.OnlineExam.model.test.Test());
 
@@ -73,12 +85,12 @@ public class TestEvaluatorTest {
         question1.setAnswers(Set.of(answer1));
 
 
-
+        //when
         when(userRepository.getUserByUsername(Mockito.any(String.class))).thenReturn(user);
         when(testRepository.getTestById(Mockito.anyInt())).thenReturn(test);
 
         int score = testEvaluator.RateTest(List.of(question,question1), "userName", 1);
-
+        //then
         assertEquals(43,score);
     }
 
