@@ -23,6 +23,18 @@ public interface UserRepository extends JpaRepository<User,Integer> {
                     """,nativeQuery = true)
     Optional<Set<User>> getUsersByClassName(@Param("className") String className);
 
+    @Query(value = """
+            SELECT u.* 
+            FROM public.user u 
+            JOIN public.user_subjects us ON u.user_id = us.user_id 
+            JOIN public.subject s ON us.subject_id = s.subject_id 
+            JOIN public.class c ON u.class_id = c.class_id 
+            WHERE s.subject = :subjectName 
+            AND c.class = :className 
+            """,nativeQuery = true)
+    Optional<Set<User>> getUsersBySubjectAndClassName(@Param("className") String className,@Param("subjectName") String subjectName);
+
+
 
 
 

@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -31,7 +32,8 @@ public class Grade {
     private Test test;
     @Column(name = "date")
     @NotNull(message = "date cannot be null")
-    private LocalDateTime dateTime = LocalDateTime.now();
+    @ColumnDefault("now()")
+    private LocalDateTime dateTime;
 
     public int getGrade() {
         return grade;
