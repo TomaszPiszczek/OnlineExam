@@ -26,6 +26,6 @@ sign in <br />
 ## Database ERD schema
 ![image](https://github.com/TomaszPiszczek/OnlineExam/assets/115466543/3d6e7060-e171-4650-9bf9-d0e4b580e6be)
 
-## TODO
-* []  login - JWT
-* []  docker
+## Swagger
+![image](https://github.com/TomaszPiszczek/OnlineExam/assets/115466543/555060c1-61b1-48c5-88dd-9fa5e0936062)
+
