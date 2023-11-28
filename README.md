@@ -1,7 +1,7 @@
 # OnlineExam
 ## General Info
 
-Main purpose of this application is to create environment for teachers and their students to easily manage exams and grades. App contain 4 user states: teacher,student,admin,not logged. Project is not finished yet.
+Main purpose of this application is to create environment for teachers and their students to easily manage exams and grades. App contain 4 user states: teacher,student,admin,not logged.
 #### Teacher can:
 create class and subjects <br />
 create tests <br />
