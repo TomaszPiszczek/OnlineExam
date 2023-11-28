@@ -33,7 +33,7 @@ public class Security {
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
-
+    //todo secure endpoints
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests(configurer ->
